@@ -56,6 +56,7 @@ const fsStatSyncWorkaround = (
     if (isObject(error) && "code" in error && error["code"] === "ENOENT") {
       return undefined;
     }
+
     throw error;
   }
 };
@@ -123,19 +124,15 @@ export class ModuleResolver implements ModuleResolverInterface {
     } catch {
       cwd = path.dirname(modulePath);
     }
-    const packageJSONPath = findUpSync(
+    const projectPackageJSONPath = findUpSync(
       (dir) => {
         const pkgFilePath = path.join(dir, "package.json");
         if (fs.existsSync(pkgFilePath)) {
           try {
             const packageJSONContents = fs.readFileSync(pkgFilePath, "utf8");
             const packageJSON = JSON.parse(packageJSONContents) as unknown;
-            // Only return package.json files that have "prettier" as the name. This ensures we find
-            // Prettier's package.json, not the project's.
             if (
               isObject(packageJSON)
-              && "name" in packageJSON
-              && packageJSON["name"] === "prettier"
             ) {
               return pkgFilePath;
             }
@@ -143,14 +140,15 @@ export class ModuleResolver implements ModuleResolverInterface {
             // If we can't read or parse the package.json, continue searching.
           }
         }
+
         return undefined;
       },
       { cwd },
     );
 
-    assertStringNotEmpty(packageJSONPath, "Cannot find Prettier package.json");
+    assertStringNotEmpty(projectPackageJSONPath, "Cannot find the \"package.json\" file for the current project.");
 
-    const prettierPackageJSON = loadNodeModule(packageJSONPath);
+    const prettierPackageJSON = loadNodeModule(projectPackageJSONPath);
     assertObject(
       prettierPackageJSON,
       'The Prettier "package.json" file was not an object.',
@@ -181,6 +179,10 @@ export class ModuleResolver implements ModuleResolverInterface {
 
     const { prettierPath, resolveGlobalModules } = getConfig(
       Uri.file(fileName),
+    );
+
+    this.loggingService.logDebug(
+      `getPrettierInstance: fileName=${fileName}, prettierPath=${prettierPath ?? "undefined"}`,
     );
 
     // Look for local module.
@@ -245,12 +247,14 @@ export class ModuleResolver implements ModuleResolverInterface {
     let moduleInstance: PrettierInstance | undefined;
 
     if (modulePath !== undefined) {
-      this.loggingService.logDebug(`Local prettier module path: ${modulePath}`);
+      this.loggingService.logDebug(`Local Prettier module path: ${modulePath}`);
+
       // First check module cache.
       moduleInstance = this.path2Module.get(modulePath);
-      if (moduleInstance) {
+      if (moduleInstance !== undefined) {
         return moduleInstance;
       }
+
       try {
         const prettierVersion =
           this.loadPrettierVersionFromPackageJSON(modulePath);
@@ -558,6 +562,9 @@ export class ModuleResolver implements ModuleResolverInterface {
 
     if (packageJSONResDir !== undefined) {
       const packagePath = resolve.sync(pkgName, { basedir: packageJSONResDir });
+      this.loggingService.logDebug(
+        `findPkg: Found ${pkgName} in ${packageJSONResDir}, resolve.sync returned: ${packagePath}`,
+      );
       this.findPkgCache.set(cacheKey, packagePath);
       return packagePath;
     }
@@ -580,6 +587,9 @@ export class ModuleResolver implements ModuleResolverInterface {
 
     if (nodeModulesResDir !== undefined && nodeModulesResDir !== "") {
       const packagePath = resolve.sync(pkgName, { basedir: nodeModulesResDir });
+      this.loggingService.logDebug(
+        `findPkg: Found ${pkgName} implicitly in ${nodeModulesResDir}, resolve.sync returned: ${packagePath}`,
+      );
       this.findPkgCache.set(cacheKey, packagePath);
       return packagePath;
     }
