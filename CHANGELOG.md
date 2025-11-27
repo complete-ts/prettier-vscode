@@ -14,6 +14,7 @@ All notable changes to the "prettier-vscode" extension will be documented in thi
   - Removed "@types/prettier", since it is now pointless.
   - Removed "glob" and "@types/glob", since it is in the standard library now.
   - Added the latest version of ESLint from [complete-lint](https://complete-ts.github.io/complete-lint) and made it pass.
+  - Fixed the bug where `prettier-plugin-sh` would crash the extension because it its language functions could not be serialized.
 
 ## [11.0.0]
 

@@ -73,7 +73,7 @@ parentPort.on("message", ({ type, id, payload }) => {
             try {
               // For prettier-vscode, `languages` are enough.
               if (methodName === "getSupportInfo") {
-                // Remove functions from language objects to avoid DataCloneError
+                // Remove functions from language objects to avoid DataCloneError.
                 // eslint-disable-next-line no-param-reassign
                 value = {
                   languages: value.languages.map((lang) => {
@@ -102,7 +102,7 @@ parentPort.on("message", ({ type, id, payload }) => {
       try {
         // For prettier-vscode, `languages` are enough.
         if (methodName === "getSupportInfo") {
-          // Remove functions from language objects to avoid DataCloneError
+          // Remove functions from language objects to avoid DataCloneError.
           result = {
             languages: result.languages.map((lang) => {
               const cleanLang = {};
