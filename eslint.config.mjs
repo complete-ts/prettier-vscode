@@ -17,8 +17,8 @@ export default defineConfig(
           allowDefaultProject: [
             "eslint.config.mjs",
             "prettier.config.mjs",
-            "scripts/clean.js",
-            "scripts/version.js",
+            "scripts/clean.mjs",
+            "scripts/version.mjs",
             "src/worker/prettier-instance-worker.js",
             "webpack.config.cjs",
           ],
