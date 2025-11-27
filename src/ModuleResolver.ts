@@ -117,7 +117,8 @@ export class ModuleResolver implements ModuleResolverInterface {
   private loadPrettierVersionFromPackageJSON(modulePath: string): string {
     let cwd: string;
     try {
-      fs.readdirSync(modulePath); // checking if dir with readdir will handle directories and symlinks
+      // Checking if dir with readdir will handle directories and symlinks.
+      fs.readdirSync(modulePath);
       cwd = modulePath;
     } catch {
       cwd = path.dirname(modulePath);
@@ -125,7 +126,24 @@ export class ModuleResolver implements ModuleResolverInterface {
     const packageJSONPath = findUpSync(
       (dir) => {
         const pkgFilePath = path.join(dir, "package.json");
-        return fs.existsSync(pkgFilePath) ? pkgFilePath : undefined;
+        if (fs.existsSync(pkgFilePath)) {
+          try {
+            const packageJSONContents = fs.readFileSync(pkgFilePath, "utf8");
+            const packageJSON = JSON.parse(packageJSONContents) as unknown;
+            // Only return package.json files that have "prettier" as the name. This ensures we find
+            // Prettier's package.json, not the project's.
+            if (
+              isObject(packageJSON)
+              && "name" in packageJSON
+              && packageJSON["name"] === "prettier"
+            ) {
+              return pkgFilePath;
+            }
+          } catch {
+            // If we can't read or parse the package.json, continue searching.
+          }
+        }
+        return undefined;
       },
       { cwd },
     );
