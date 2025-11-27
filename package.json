@@ -124,6 +124,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
+    "complete-common": "2.10.0",
     "find-up": "5.0.0",
     "prettier": "3.6.2",
     "resolve": "1.22.8",

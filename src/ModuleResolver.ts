@@ -28,6 +28,7 @@ import { PrettierWorkerInstance } from "./PrettierWorkerInstance";
 import { PrettierInstance } from "./PrettierInstance";
 import { PrettierMainThreadInstance } from "./PrettierMainThreadInstance";
 import { loadNodeModule, resolveConfigPlugins } from "./ModuleLoader";
+import { isObject } from "complete-common";
 
 const minPrettierVersion = "1.13.0";
 
@@ -47,8 +48,8 @@ const fsStatSyncWorkaround = (
   options.throwIfNoEntry = true;
   try {
     return origFsStatSync(path, options);
-  } catch (error: any) {
-    if (error.code === "ENOENT") {
+  } catch (error: unknown) {
+    if (isObject(error) && "code" in error && error.code === "ENOENT") {
       return undefined;
     }
     throw error;

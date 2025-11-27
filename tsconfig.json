@@ -9,7 +9,10 @@
     "removeComments": true,
     "lib": ["ES2020"],
     "sourceMap": true,
-    "rootDir": "src"
+    "rootDir": "src",
+
+    // Added
+    "skipLibCheck": true
   },
   "exclude": ["node_modules", ".vscode-test", "test-fixtures"],
   "include": [
