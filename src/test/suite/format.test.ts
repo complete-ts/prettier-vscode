@@ -37,11 +37,11 @@ export async function getText(
 }
 
 const prettierConfigOrig = path.resolve(
-  import.meta.dirname,
+  __dirname,
   "../../../.prettierrc",
 );
 const prettierConfigTemp = path.resolve(
-  import.meta.dirname,
+  __dirname,
   "../../../old.prettierrc",
 );
 

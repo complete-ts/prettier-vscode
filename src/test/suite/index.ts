@@ -9,7 +9,7 @@ export async function run(): Promise<void> {
     color: true,
   });
 
-  const testsRoot = path.resolve(import.meta.dirname, "..");
+  const testsRoot = path.resolve(__dirname, "..");
 
   // Use Node.js built-in glob (returns an AsyncIterable).
   for await (const file of glob("**/**.test.js", { cwd: testsRoot })) {

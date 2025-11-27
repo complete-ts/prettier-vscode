@@ -4,7 +4,7 @@ import path from "node:path";
 const folders = ["../dist", "../out"];
 
 for (const folder of folders) {
-  const dir = path.join(import.meta.dirname, folder);
+  const dir = path.join(__dirname, folder);
   if (fs.existsSync(dir)) {
     fs.rmSync(dir, { recursive: true, force: true });
   }

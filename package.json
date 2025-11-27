@@ -2,8 +2,8 @@
   "name": "prettier-vscode",
   "displayName": "Prettier - Code formatter",
   "description": "Code formatter using prettier",
+  "type": "commonjs",
   "version": "11.0.0",
-  "type": "module",
   "publisher": "complete",
   "author": "Prettier <@prettiercode>",
   "galleryBanner": {
@@ -66,8 +66,8 @@
     "onStartupFinished"
   ],
   "icon": "icon.png",
-  "main": "./dist/extension",
-  "browser": "./dist/web-extension",
+  "main": "./dist/extension.js",
+  "browser": "./dist/web-extension.js",
   "scripts": {
     "clean": "node ./scripts/clean.js",
     "lint": "eslint",

@@ -38,13 +38,13 @@ async function main() {
     // The folder containing the Extension Manifest package.json. Passed to
     // `--extensionDevelopmentPath`.
     const extensionDevelopmentPath = path.resolve(
-      import.meta.dirname,
+      __dirname,
       "../../",
     );
 
     // The path to the extension test runner script. Passed to --extensionTestsPath.
     const extensionTestsPath = path.resolve(
-      import.meta.dirname,
+      __dirname,
       "./suite/index.js",
     );
 
