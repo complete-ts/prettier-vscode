@@ -5,35 +5,29 @@ import path from "node:path";
 import * as prettier from "prettier";
 import { promisify } from "node:util";
 import * as vscode from "vscode";
+import { assertDefined } from "complete-common";
 
 const readFileAsync: (filePath: string, encoding: "utf8") => Promise<string> =
   promisify(readFile);
 
 const wait = async (ms: number) =>
+  // eslint-disable-next-line no-promise-executor-return
   await new Promise((resolve) => setTimeout(resolve, ms));
 
-/**
- * gets the workspace folder by name
- *
- * @param name Workspace folder name
- */
-export const getWorkspaceFolderUri = (workspaceFolderName: string) => {
-  const workspaceFolder = vscode.workspace.workspaceFolders!.find(
+/** Gets the workspace folder by name. */
+export function getWorkspaceFolderURI(workspaceFolderName: string): vscode.Uri {
+  const workspaceFolder = vscode.workspace.workspaceFolders?.find(
     (folder) => folder.name === workspaceFolderName,
   );
-  if (!workspaceFolder) {
-    throw new Error(
-      "Folder not found in workspace. Did you forget to add the test folder to test.code-workspace?",
-    );
-  }
+  assertDefined(workspaceFolder, "Folder not found in workspace. Did you forget to add the test folder to test.code-workspace?")
   return workspaceFolder.uri;
 };
 
 export async function getText(
   workspaceFolderName: string,
   expectedFile: string,
-) {
-  const base = getWorkspaceFolderUri(workspaceFolderName);
+): Promise<string> {
+  const base = getWorkspaceFolderURI(workspaceFolderName);
   const expectedPath = path.join(base.fsPath, expectedFile);
   const expected = await readFileAsync(expectedPath, "utf8");
   return expected;
@@ -42,29 +36,31 @@ export async function getText(
 const prettierConfigOrig = path.resolve(__dirname, "../../../.prettierrc");
 const prettierConfigTemp = path.resolve(__dirname, "../../../old.prettierrc");
 
-export function moveRootPrettierRC(done: Done) {
+export function moveRootPrettierRC(done: Done): void {
   rename(prettierConfigOrig, prettierConfigTemp, done);
 }
 
-export function putBackPrettierRC(done: Done) {
+export function putBackPrettierRC(done: Done): void {
   rename(prettierConfigTemp, prettierConfigOrig, done);
 }
 
 /**
- * loads and format a file.
+ * Loads and format a file.
  *
- * @param workspaceFolderName
- * @param testFile path relative to base URI (a workspaceFolder's URI)
- * @param base base URI
- * @param shouldRetry
- * @returns source code and resulting code
+ * @param workspaceFolderName n/a
+ * @param testFile Path relative to base URI (a workspaceFolder's URI).
+ * @param shouldRetry n/a
+ * @returns The source code and resulting code.
  */
 export async function format(
   workspaceFolderName: string,
   testFile: string,
   shouldRetry = false,
-) {
-  const base = getWorkspaceFolderUri(workspaceFolderName);
+): Promise<{
+  actual: string;
+  source: string;
+}> {
+  const base = getWorkspaceFolderURI(workspaceFolderName);
   const absPath = path.join(base.fsPath, testFile);
   const doc = await vscode.workspace.openTextDocument(absPath);
   const text = doc.getText();
@@ -77,6 +73,7 @@ export async function format(
   }
   // eslint-disable-next-line no-console
   console.time(testFile);
+  // eslint-disable-next-line complete/require-variadic-function-argument
   await vscode.commands.executeCommand("editor.action.formatDocument");
 
   let actual = doc.getText();
@@ -86,7 +83,9 @@ export async function format(
       if (text !== actual) {
         break;
       }
+      // eslint-disable-next-line no-await-in-loop
       await wait(250);
+      // eslint-disable-next-line complete/require-variadic-function-argument, no-await-in-loop
       await vscode.commands.executeCommand("editor.action.formatDocument");
       actual = doc.getText();
     }
@@ -95,13 +94,16 @@ export async function format(
   // eslint-disable-next-line no-console
   console.timeEnd(testFile);
 
-  return { actual, source: text };
+  return {
+    actual,
+    source: text,
+  };
 }
 /**
- * Compare prettier's output (default settings) with the output from extension.
+ * Compare Prettier's output (default settings) with the output from extension.
  *
- * @param file path relative to workspace root
- * @param options
+ * @param file Path relative to workspace root.
+ * @param options The options from Prettier.
  */
 async function formatSameAsPrettier(
   file: string,
@@ -109,8 +111,6 @@ async function formatSameAsPrettier(
 ) {
   const prettierOptions: prettier.Options = {
     ...options,
-
-    /* cspell: disable-next-line */
     filepath: file,
   };
   const { actual, source } = await format("project", file);
@@ -118,8 +118,10 @@ async function formatSameAsPrettier(
   assert.equal(actual, prettierFormatted);
 }
 
-suite("Test format Document", function () {
+suite("Test format Document", function tests() {
+  // eslint-disable-next-line @typescript-eslint/no-invalid-this
   this.timeout(10_000);
+
   test("it formats JavaScript", async () => {
     await wait(500);
     await formatSameAsPrettier("formatTest/ugly.js");

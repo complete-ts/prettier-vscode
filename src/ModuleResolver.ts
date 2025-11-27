@@ -37,18 +37,16 @@ export type PrettierNodeModule = typeof prettier;
 
 const origFsStatSync = fs.statSync;
 const fsStatSyncWorkaround = (
-  path: fs.PathLike,
+  pathLike: fs.PathLike,
   options: fs.StatSyncOptions,
 ) => {
-  if (
-    options?.throwIfNoEntry === true ||
-    options?.throwIfNoEntry === undefined
-  ) {
-    return origFsStatSync(path, options);
+  if (options.throwIfNoEntry === true || options.throwIfNoEntry === undefined) {
+    return origFsStatSync(pathLike, options);
   }
+  // eslint-disable-next-line no-param-reassign
   options.throwIfNoEntry = true;
   try {
-    return origFsStatSync(path, options);
+    return origFsStatSync(pathLike, options);
   } catch (error: unknown) {
     if (isObject(error) && "code" in error && error["code"] === "ENOENT") {
       return undefined;
@@ -87,30 +85,31 @@ const globalPaths: Record<
 function globalPathGet(packageManager: PackageManagers): string | undefined {
   const pm = globalPaths[packageManager];
   if (pm) {
-    if (pm.cache === undefined) {
-      pm.cache = pm.get();
-    }
+    pm.cache ??= pm.get();
     return pm.cache;
   }
   return undefined;
 }
 
 export class ModuleResolver implements ModuleResolverInterface {
-  private readonly findPkgCache: Map<string, string>;
+  private readonly findPkgCache = new Map<string, string>();
   private readonly ignorePathCache = new Map<string, string>();
 
   private readonly path2Module = new Map<string, PrettierInstance>();
+  private readonly loggingService: LoggingService;
 
-  constructor(private readonly loggingService: LoggingService) {
-    this.findPkgCache = new Map();
+  constructor(loggingService: LoggingService) {
+    this.loggingService = loggingService;
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   public getGlobalPrettierInstance(): PrettierNodeModule {
     return prettier;
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   private loadPrettierVersionFromPackageJSON(modulePath: string): string {
-    let cwd = "";
+    let cwd: string;
     try {
       fs.readdirSync(modulePath); // checking if dir with readdir will handle directories and symlinks
       cwd = modulePath;
@@ -120,9 +119,7 @@ export class ModuleResolver implements ModuleResolverInterface {
     const packageJSONPath = findUpSync(
       (dir) => {
         const pkgFilePath = path.join(dir, "package.json");
-        if (fs.existsSync(pkgFilePath)) {
-          return pkgFilePath;
-        }
+        return fs.existsSync(pkgFilePath) ? pkgFilePath : undefined;
       },
       { cwd },
     );
@@ -166,36 +163,40 @@ export class ModuleResolver implements ModuleResolverInterface {
     let modulePath: string | undefined;
 
     try {
-      modulePath = prettierPath
-        ? getWorkspaceRelativePath(fileName, prettierPath)
-        : this.findPkg(fileName, "prettier");
+      modulePath =
+        prettierPath === undefined
+          ? this.findPkg(fileName, "prettier")
+          : getWorkspaceRelativePath(fileName, prettierPath);
     } catch (error) {
-      let moduleDirectory = "";
-      if (!modulePath && error instanceof Error) {
+      let moduleDirectory: string | undefined;
+      if (modulePath === undefined && error instanceof Error) {
         // If findPkg threw an error from `resolve.sync`, attempt to parse the directory it failed
         // on to provide a better error message.
         const resolveSyncPathRegex = /Cannot find module '.*' from '(.*)'/;
         const resolveErrorMatches = resolveSyncPathRegex.exec(error.message);
-        if (resolveErrorMatches && resolveErrorMatches[1]) {
-          moduleDirectory = resolveErrorMatches[1];
+        if (resolveErrorMatches !== null) {
+          const match = resolveErrorMatches[1];
+          if (match !== undefined) {
+            moduleDirectory = match;
+          }
         }
       }
 
       this.loggingService.logInfo(
         `Attempted to determine module path from ${
-          modulePath || moduleDirectory || "package.json"
+          modulePath ?? moduleDirectory ?? "package.json"
         }`,
       );
       this.loggingService.logError(FAILED_TO_LOAD_MODULE_MESSAGE, error);
 
-      // Return here because there is a local module, but we can't resolve it. Must do NPM install
-      // for prettier to work.
+      // Return here because there is a local module, but we can't resolve it. Must do npm install
+      // for Prettier to work.
       return undefined;
     }
 
-    // If global modules allowed, look for global module
-    if (resolveGlobalModules && !modulePath) {
-      let workspaceFolder;
+    // If global modules allowed, look for global module.
+    if (resolveGlobalModules && modulePath === undefined) {
+      let workspaceFolder: Uri | undefined;
       if (workspace.workspaceFolders) {
         const folder = workspace.getWorkspaceFolder(Uri.file(fileName));
         if (folder) {
@@ -206,7 +207,7 @@ export class ModuleResolver implements ModuleResolverInterface {
         "npm" | "pnpm" | "yarn"
       >("npm.packageManager", workspaceFolder);
       const resolvedGlobalPackageManagerPath = globalPathGet(packageManager);
-      if (resolvedGlobalPackageManagerPath) {
+      if (resolvedGlobalPackageManagerPath !== undefined) {
         const globalModulePath = path.join(
           resolvedGlobalPackageManagerPath,
           "prettier",
@@ -221,7 +222,7 @@ export class ModuleResolver implements ModuleResolverInterface {
 
     if (modulePath !== undefined) {
       this.loggingService.logDebug(`Local prettier module path: ${modulePath}`);
-      // First check module cache
+      // First check module cache.
       moduleInstance = this.path2Module.get(modulePath);
       if (moduleInstance) {
         return moduleInstance;
@@ -235,14 +236,10 @@ export class ModuleResolver implements ModuleResolverInterface {
         moduleInstance = isAboveVersion3
           ? new PrettierWorkerInstance(modulePath)
           : new PrettierMainThreadInstance(modulePath);
-        if (moduleInstance) {
-          this.path2Module.set(modulePath, moduleInstance);
-        }
+        this.path2Module.set(modulePath, moduleInstance);
       } catch (error) {
         this.loggingService.logInfo(
-          `Attempted to load Prettier module from ${
-            modulePath || "package.json"
-          }`,
+          `Attempted to load Prettier module from ${modulePath}`,
         );
         this.loggingService.logError(FAILED_TO_LOAD_MODULE_MESSAGE, error);
 
@@ -254,12 +251,13 @@ export class ModuleResolver implements ModuleResolverInterface {
     if (moduleInstance) {
       const version = await moduleInstance.import();
 
-      if (!version && prettierPath) {
+      if (version === "" && prettierPath !== undefined) {
         this.loggingService.logError(INVALID_PRETTIER_PATH_MESSAGE);
         return undefined;
       }
 
-      const isValidVersion = version && semver.gte(version, minPrettierVersion);
+      const isValidVersion =
+        version !== "" && semver.gte(version, minPrettierVersion);
 
       if (!isValidVersion) {
         this.loggingService.logInfo(
@@ -281,14 +279,14 @@ export class ModuleResolver implements ModuleResolverInterface {
     ignorePath: string,
   ): Promise<string | undefined> {
     const cacheKey = `${fileName}:${ignorePath}`;
-    // cache resolvedIgnorePath because resolving it checks the file system
+    // Cache resolvedIgnorePath because resolving it checks the file system.
     let resolvedIgnorePath = this.ignorePathCache.get(cacheKey);
     if (!resolvedIgnorePath) {
       resolvedIgnorePath = getWorkspaceRelativePath(fileName, ignorePath);
-      // if multiple different workspace folders contain this same file, we may have chosen one that
-      // doesn't actually contain .prettierignore
+      // If multiple different workspace folders contain this same file, we may have chosen one that
+      // doesn't actually contain .prettierignore.
       if (workspace.workspaceFolders) {
-        // all workspace folders that contain the file
+        // All workspace folders that contain the file.
         const folders = workspace.workspaceFolders
           .map((folder) => folder.uri.fsPath)
           .filter((folder) => {
@@ -300,8 +298,8 @@ export class ModuleResolver implements ModuleResolverInterface {
               !path.isAbsolute(relative)
             );
           })
-          // sort folders innermost to outermost
-          .sort((a, b) => b.length - a.length);
+          // Sort folders innermost to outermost.
+          .toSorted((a, b) => b.length - a.length);
         for (const folder of folders) {
           const p = path.join(folder, ignorePath);
           if (
@@ -323,6 +321,7 @@ export class ModuleResolver implements ModuleResolverInterface {
     return resolvedIgnorePath;
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   private adjustFileNameForPrettierVersion3_1_1(
     prettierInstance: { version: string | null },
     fileName: string,
@@ -330,7 +329,9 @@ export class ModuleResolver implements ModuleResolverInterface {
     if (!prettierInstance.version) {
       return fileName;
     }
-    // Avoid https://github.com/prettier/prettier/pull/15363
+
+    // Avoid: https://github.com/prettier/prettier/pull/15363
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const isGte3_1_1 = semver.gte(prettierInstance.version, "3.1.1");
     if (isGte3_1_1) {
       return path.join(fileName, "noop.js");
@@ -395,7 +396,8 @@ export class ModuleResolver implements ModuleResolverInterface {
 
       return "error";
     }
-    if (resolveConfigOptions.config) {
+
+    if (resolveConfigOptions.config !== undefined) {
       this.loggingService.logInfo(
         `Using config file at ${resolveConfigOptions.config}`,
       );
@@ -485,37 +487,50 @@ export class ModuleResolver implements ModuleResolverInterface {
     }
 
     // First look for an explicit package.json dep.
-    const packageJsonResDir = findUpSync(
+    const packageJSONResDir = findUpSync(
       (dir) => {
         if (fs.existsSync(path.join(dir, "package.json"))) {
-          let packageJson;
+          let packageJSON: unknown;
           try {
-            packageJson = JSON.parse(
-              fs.readFileSync(path.join(dir, "package.json"), "utf8"),
+            const packageJSONContents = fs.readFileSync(
+              path.join(dir, "package.json"),
+              "utf8",
             );
+            packageJSON = JSON.parse(packageJSONContents);
           } catch {
             // Swallow, if we can't read it we don't want to resolve based on it.
           }
 
-          if (
-            packageJson &&
-            ((packageJson.dependencies && packageJson.dependencies[pkgName]) ||
-              (packageJson.devDependencies &&
-                packageJson.devDependencies[pkgName]))
-          ) {
-            return dir;
+          if (isObject(packageJSON)) {
+            const { dependencies } = packageJSON;
+            if (isObject(dependencies)) {
+              const dependency = dependencies[pkgName];
+              if (typeof dependency === "string" && dependency !== "") {
+                return dir;
+              }
+            }
+
+            const { devDependencies } = packageJSON;
+            if (isObject(devDependencies)) {
+              const dependency = devDependencies[pkgName];
+              if (typeof dependency === "string" && dependency !== "") {
+                return dir;
+              }
+            }
           }
         }
 
         if (this.isInternalTestRoot(dir)) {
           return findUpStop;
         }
+
+        return undefined;
       },
       { cwd: finalPath, type: "directory" },
     );
 
-    if (packageJsonResDir) {
-      const packagePath = resolve.sync(pkgName, { basedir: packageJsonResDir });
+    if (packageJSONResDir !== undefined) {
+      const packagePath = resolve.sync(pkgName, { basedir: packageJSONResDir });
       this.findPkgCache.set(cacheKey, packagePath);
       return packagePath;
     }
@@ -530,6 +545,8 @@ export class ModuleResolver implements ModuleResolverInterface {
         if (this.isInternalTestRoot(dir)) {
           return findUpStop;
         }
+
+        return undefined;
       },
       { cwd: finalPath, type: "directory" },
     );

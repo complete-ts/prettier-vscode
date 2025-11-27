@@ -11,7 +11,6 @@ const config = {
     path: path.resolve(__dirname, "dist"),
     filename: "extension.js",
     libraryTarget: "commonjs2",
-    /* cspell: disable-next-line */
     devtoolModuleFilenameTemplate: "../[resource-path]",
   },
   plugins: [
@@ -23,7 +22,6 @@ const config = {
       patterns: [{ from: "src/worker", to: "worker" }],
     }),
   ],
-  /* cspell: disable-next-line */
   devtool: "source-map",
   externals: {
     vscode: "commonjs vscode",

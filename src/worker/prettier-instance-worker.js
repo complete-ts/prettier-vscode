@@ -1,10 +1,11 @@
-const { parentPort } = require("worker_threads");
+const { parentPort } = require("node:worker_threads");
 
 const path2ModuleCache = new Map();
 
 function requireInstance(modulePath) {
   let prettierInstance = path2ModuleCache.get(modulePath);
   if (!prettierInstance) {
+    // eslint-disable-next-line import-x/no-dynamic-require
     prettierInstance = require(modulePath);
     if (!prettierInstance.format) {
       throw new Error("wrong instance");
@@ -29,11 +30,13 @@ parentPort.on("message", ({ type, id, payload }) => {
         parentPort.postMessage({
           type,
           id,
+          // eslint-disable-next-line unicorn/no-null
           payload: { version: null },
         });
       }
       break;
     }
+
     case "callMethod": {
       const { modulePath, methodName, methodArgs } = payload;
       const postError = (error) => {
@@ -68,8 +71,9 @@ parentPort.on("message", ({ type, id, payload }) => {
         result.then(
           (value) => {
             try {
-              // For prettier-vscode, `languages` are enough
+              // For prettier-vscode, `languages` are enough.
               if (methodName === "getSupportInfo") {
+                // eslint-disable-next-line no-param-reassign
                 value = { languages: value.languages };
               }
               postResult(value);
@@ -77,14 +81,15 @@ parentPort.on("message", ({ type, id, payload }) => {
               postError(error);
             }
           },
-          (reason) => {
-            postError(reason);
+          // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
+          (error) => {
+            postError(error);
           },
         );
         break;
       }
       try {
-        // For prettier-vscode, `languages` are enough
+        // For prettier-vscode, `languages` are enough.
         if (methodName === "getSupportInfo") {
           result = { languages: result.languages };
         }
@@ -92,6 +97,10 @@ parentPort.on("message", ({ type, id, payload }) => {
       } catch (error) {
         postError(error);
       }
+      break;
+    }
+
+    default: {
       break;
     }
   }

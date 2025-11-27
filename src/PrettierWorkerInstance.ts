@@ -14,6 +14,17 @@ import type {
 } from "./PrettierInstance.js";
 import type { ResolveConfigOptions, Options } from "prettier";
 
+interface WorkerMessage {
+  type: "import" | "callMethod";
+  id: number;
+  payload: {
+    isError: boolean;
+    modulePath: string;
+    result: unknown;
+    version: string;
+  };
+}
+
 let currentCallId = 0;
 
 const worker = new Worker(
@@ -35,12 +46,12 @@ export const PrettierWorkerInstance: PrettierInstanceConstructor = class Prettie
 
   // eslint-disable-next-line unicorn/no-null
   public version: string | null = null;
-  private readonly modulePath: string
+  private readonly modulePath: string;
 
   constructor(modulePath: string) {
     this.modulePath = modulePath;
 
-    worker.on("message", ({ type, id, payload }) => {
+    worker.on("message", ({ type, id, payload }: WorkerMessage) => {
       const resolver = this.messageResolvers.get(id);
       if (resolver) {
         this.messageResolvers.delete(id);
@@ -65,7 +76,8 @@ export const PrettierWorkerInstance: PrettierInstanceConstructor = class Prettie
   }
 
   public async import(): Promise</* version of imported prettier */ string> {
-    const callId = currentCallId++;
+    const callId = currentCallId;
+    currentCallId++;
     const promise = new Promise((resolve, reject) => {
       this.messageResolvers.set(callId, { resolve, reject });
     });
@@ -81,18 +93,22 @@ export const PrettierWorkerInstance: PrettierInstanceConstructor = class Prettie
     source: string,
     options?: PrettierOptions,
   ): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await this.callMethod("format", [source, options]);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return result;
   }
 
   public async getSupportInfo({
     plugins,
   }: {
-    plugins: Array<string | PrettierPlugin>;
+    plugins: Array<string | URL | PrettierPlugin>;
   }): Promise<{
     languages: PrettierSupportLanguage[];
   }> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await this.callMethod("getSupportInfo", [{ plugins }]);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return result;
   }
 
@@ -104,15 +120,19 @@ export const PrettierWorkerInstance: PrettierInstanceConstructor = class Prettie
     filePath: string,
     fileInfoOptions?: PrettierFileInfoOptions,
   ): Promise<PrettierFileInfoResult> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await this.callMethod("getFileInfo", [
       filePath,
       fileInfoOptions,
     ]);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return result;
   }
 
   public async resolveConfigFile(filePath?: string): Promise<string | null> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await this.callMethod("resolveConfigFile", [filePath]);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return result;
   }
 
@@ -120,16 +140,19 @@ export const PrettierWorkerInstance: PrettierInstanceConstructor = class Prettie
     fileName: string,
     options?: ResolveConfigOptions,
   ): Promise<Options> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await this.callMethod("resolveConfig", [fileName, options]);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return result;
   }
 
-
   private async callMethod(
     methodName: string,
-    methodArgs: unknown[],
+    methodArgs: readonly unknown[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
-    const callId = currentCallId++;
+    const callId = currentCallId;
+    currentCallId++;
     const promise = new Promise((resolve, reject) => {
       this.messageResolvers.set(callId, { resolve, reject });
     });

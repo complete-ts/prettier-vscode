@@ -574,7 +574,6 @@ export default class PrettierEditService implements Disposable {
     const options: PrettierOptions = {
       ...(fallbackToVSCodeConfig ? vsOpts : {}),
 
-      /* cspell: disable-next-line */
       filepath: fileName,
       parser,
       ...rangeFormattingOptions,

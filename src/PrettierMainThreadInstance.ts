@@ -60,7 +60,7 @@ export const PrettierMainThreadInstance: PrettierInstanceConstructor = class Pre
   public async getSupportInfo({
     plugins,
   }: {
-    plugins: Array<string | PrettierPlugin>;
+    plugins: Array<string | URL | PrettierPlugin>;
   }): Promise<{
     languages: PrettierSupportLanguage[];
   }> {

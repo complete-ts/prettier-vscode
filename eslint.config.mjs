@@ -11,9 +11,26 @@ export default defineConfig(
   ...completeConfigBase,
 
   {
+    languageOptions: {
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: [
+            "src/worker/prettier-instance-worker.js",
+            "webpack.config.js",
+          ],
+        },
+      },
+    },
+  },
+
+  {
     rules: {
       "no-console": "error",
       "no-cycle": "off", // TODO
     },
+  },
+
+  {
+    ignores: ["test-fixtures/**"],
   },
 );

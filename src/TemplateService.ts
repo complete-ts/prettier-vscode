@@ -12,20 +12,19 @@ export class TemplateService {
     this.prettierModule = prettierModule;
   }
 
-  public async writeConfigFile(folderPath: Uri) {
+  public async writeConfigFile(folderPath: Uri): Promise<void> {
     const settings = { tabWidth: 2, useTabs: false };
 
     const outputPath = Uri.joinPath(folderPath, ".prettierrc");
 
     const formatterOptions: PrettierOptions = {
-      /* cspell: disable-next-line */
       filepath: outputPath.scheme === "file" ? outputPath.fsPath : undefined,
       tabWidth: settings.tabWidth,
       useTabs: settings.useTabs,
     };
 
     const templateSource = await this.prettierModule.format(
-      JSON.stringify(settings, null, 2),
+      JSON.stringify(settings, undefined, 2),
       formatterOptions,
     );
 

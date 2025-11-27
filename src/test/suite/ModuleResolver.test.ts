@@ -2,7 +2,7 @@ import assert from "node:assert";
 import path from "node:path";
 import * as prettier from "prettier";
 import * as sinon from "sinon";
-import { getWorkspaceFolderUri } from "./format.test.js";
+import { getWorkspaceFolderURI } from "./format.test.js";
 import type { PrettierNodeModule } from "../../ModuleResolver.js";
 import { ModuleResolver } from "../../ModuleResolver.js";
 import { LoggingService } from "../../LoggingService.js";
@@ -27,7 +27,7 @@ suite("Test ModuleResolver", function tests() {
   suite("getPrettierInstance", () => {
     test("it returns the bundled version of Prettier if local isn't found", async () => {
       const fileName = path.join(
-        getWorkspaceFolderUri("no-dep").fsPath,
+        getWorkspaceFolderURI("no-dep").fsPath,
         "index.js",
       );
       const prettierInstance =
@@ -39,7 +39,7 @@ suite("Test ModuleResolver", function tests() {
 
     test("it returns the bundled version of Prettier if local is outdated", async () => {
       const fileName = path.join(
-        getWorkspaceFolderUri("outdated").fsPath,
+        getWorkspaceFolderURI("outdated").fsPath,
         "ugly.js",
       );
       const prettierInstance =
@@ -51,7 +51,7 @@ suite("Test ModuleResolver", function tests() {
 
     test("it returns prettier version from package.json", async () => {
       const fileName = path.join(
-        getWorkspaceFolderUri("specific-version").fsPath,
+        getWorkspaceFolderURI("specific-version").fsPath,
         "ugly.js",
       );
       const prettierInstance = (await moduleResolver.getPrettierInstance(
@@ -67,7 +67,7 @@ suite("Test ModuleResolver", function tests() {
 
     test("it returns prettier version from module dep", async () => {
       const fileName = path.join(
-        getWorkspaceFolderUri("module").fsPath,
+        getWorkspaceFolderURI("module").fsPath,
         "index.js",
       );
       const prettierInstance =
@@ -82,7 +82,7 @@ suite("Test ModuleResolver", function tests() {
 
     test("it uses explicit dep if found instead fo a closer implicit module dep", async () => {
       const fileName = path.join(
-        getWorkspaceFolderUri("explicit-dep").fsPath,
+        getWorkspaceFolderURI("explicit-dep").fsPath,
         "implicit-dep",
         "index.js",
       );

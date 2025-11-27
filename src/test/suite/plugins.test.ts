@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { format, getText } from "./format.test.js";
 
-suite("Test plugins", function () {
+suite("Test plugins", function tests() {
   // eslint-disable-next-line @typescript-eslint/no-invalid-this
   this.timeout(10_000);
 
