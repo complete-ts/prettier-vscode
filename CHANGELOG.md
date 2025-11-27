@@ -18,6 +18,7 @@ All notable changes to the "prettier-vscode" extension will be documented in thi
   - Removed "@types/prettier", since it is now pointless.
   - Removed "glob" and "@types/glob", since it is in the standard library now.
   - Added the latest version of ESLint from [complete-lint](https://complete-ts.github.io/complete-lint) and made it pass.
+  - Changed the imports to ESM-style. (This required a modification to the WebPack config.)
 
 ## [11.0.0]
 
