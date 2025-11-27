@@ -38,9 +38,13 @@ export type PrettierNodeModule = typeof prettier;
 const origFsStatSync = fs.statSync;
 const fsStatSyncWorkaround = (
   pathLike: fs.PathLike,
-  options: fs.StatSyncOptions,
+  options?: fs.StatSyncOptions,
 ) => {
-  if (options.throwIfNoEntry === true || options.throwIfNoEntry === undefined) {
+  if (
+    options === undefined
+    || options.throwIfNoEntry === true
+    || options.throwIfNoEntry === undefined
+  ) {
     return origFsStatSync(pathLike, options);
   }
   // eslint-disable-next-line no-param-reassign

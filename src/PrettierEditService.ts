@@ -434,7 +434,6 @@ export class PrettierEditService implements Disposable {
 
     const prettierInstance =
       await this.moduleResolver.getPrettierInstance(fileName);
-    this.loggingService.logInfo("PrettierInstance:", prettierInstance);
 
     if (!prettierInstance) {
       this.loggingService.logError(
