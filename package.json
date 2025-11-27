@@ -1,6 +1,6 @@
 {
   "name": "prettier-vscode-community",
-  "displayName": "Prettier - Code Formatter",
+  "displayName": "Prettier - Code Formatter (Community Fork)",
   "version": "12.0.0",
   "description": "Code formatter using Prettier",
   "categories": [
