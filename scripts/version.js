@@ -2,7 +2,7 @@
 
 // Replace [Unreleased] with [${package.version}] sed like.
 
-const fs = require("node:fs");
+import fs from "node:fs";
 
 const v = process.env.npm_package_version;
 const CHANGELOG = "CHANGELOG.md";

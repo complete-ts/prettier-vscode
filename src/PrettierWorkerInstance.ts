@@ -29,7 +29,7 @@ let currentCallId = 0;
 
 const worker = new Worker(
   url.pathToFileURL(
-    path.join(__dirname, "/worker/prettier-instance-worker.js"),
+    path.join(import.meta.dirname, "/worker/prettier-instance-worker.js"),
   ),
 );
 

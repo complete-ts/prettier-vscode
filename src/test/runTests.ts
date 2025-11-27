@@ -1,7 +1,7 @@
 import path from "node:path";
 import { runTests } from "@vscode/test-electron";
 import * as tmp from "tmp";
-import * as fs from "fs-extra";
+import fs from "fs-extra";
 
 async function createTempDir() {
   return await new Promise<string>((resolve, reject) => {
@@ -25,8 +25,8 @@ async function createSettings(): Promise<string> {
     "security.workspace.trust.enabled": false, // Disable trusted workspaces.
   };
 
-  fs.ensureDirSync(path.dirname(settingsFile));
-  fs.writeFileSync(settingsFile, JSON.stringify(defaultSettings, undefined, 4));
+  await fs.ensureDir(path.dirname(settingsFile));
+  await fs.writeFile(settingsFile, JSON.stringify(defaultSettings, undefined, 4));
   return userDataDirectory;
 }
 
@@ -34,10 +34,10 @@ async function main() {
   try {
     // The folder containing the Extension Manifest package.json. Passed to
     // `--extensionDevelopmentPath`.
-    const extensionDevelopmentPath = path.resolve(__dirname, "../../");
+    const extensionDevelopmentPath = path.resolve(import.meta.dirname, "../../");
 
     // The path to the extension test runner script. Passed to --extensionTestsPath.
-    const extensionTestsPath = path.resolve(__dirname, "./suite/index");
+    const extensionTestsPath = path.resolve(import.meta.dirname, "./suite/index");
 
     // The path to the workspace file.
     const workspacePath = path.resolve("test-fixtures", "test.code-workspace");

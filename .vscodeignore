@@ -16,7 +16,6 @@ CONTRIBUTING.md
 CONTRIBUTORS.md
 tsconfig.json
 webpack.config.js
-yarn.lock
 dist/*.map
 
 node_modules/
