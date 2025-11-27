@@ -72,11 +72,11 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
     },
-    // "editor.defaultFormatter": "esbenp.prettier-vscode", // TODO
+    "editor.defaultFormatter": "complete.prettier-vscode",
     "editor.formatOnSave": true
   },
   "[css][html][json][jsonc][markdown][postcss][yaml]": {
-    // "editor.defaultFormatter": "esbenp.prettier-vscode", // TODO
+    "editor.defaultFormatter": "complete.prettier-vscode",
     "editor.formatOnSave": true
   }
 }

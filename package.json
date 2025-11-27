@@ -4,7 +4,7 @@
   "description": "Code formatter using prettier",
   "version": "11.0.0",
   "type": "module",
-  "publisher": "zamiell",
+  "publisher": "complete",
   "author": "Prettier <@prettiercode>",
   "galleryBanner": {
     "color": "#ffe04b",
@@ -13,7 +13,7 @@
   "sponsor": {
     "url": "https://opencollective.com/prettier"
   },
-  "homepage": "https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode",
+  "homepage": "https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode",
   "repository": {
     "type": "git",
     "url": "https://github.com/prettier/prettier-vscode.git"
