@@ -121,7 +121,7 @@ export class ModuleResolver implements ModuleResolverInterface {
           return pkgFilePath;
         }
       },
-      { cwd }
+      { cwd },
     );
 
     if (!packageJsonPath) {
@@ -136,10 +136,8 @@ export class ModuleResolver implements ModuleResolverInterface {
       typeof prettierPkgJson === "object" &&
       prettierPkgJson !== null &&
       "version" in prettierPkgJson &&
-      // @ts-expect-error checked
       typeof prettierPkgJson.version === "string"
     ) {
-      // @ts-expect-error checked
       version = prettierPkgJson.version;
     }
 
@@ -382,8 +380,8 @@ export class ModuleResolver implements ModuleResolverInterface {
       config: isVirtual
         ? undefined
         : vscodeConfig.configPath
-        ? getWorkspaceRelativePath(fileName, vscodeConfig.configPath)
-        : configPath,
+          ? getWorkspaceRelativePath(fileName, vscodeConfig.configPath)
+          : configPath,
       editorconfig: isVirtual ? undefined : vscodeConfig.useEditorConfig,
     };
 
