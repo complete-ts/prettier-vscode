@@ -1,5 +1,5 @@
 {
-  "name": "prettier-vscode",
+  "name": "prettier-vscode-community",
   "displayName": "Prettier - Code Formatter",
   "version": "12.0.0",
   "description": "Code formatter using Prettier",
@@ -40,7 +40,7 @@
     "yaml",
     "yml"
   ],
-  "homepage": "https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode",
+  "homepage": "https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode-community",
   "bugs": {
     "url": "https://github.com/complete-ts/prettier-vscode/issues"
   },

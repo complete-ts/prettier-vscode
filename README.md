@@ -46,10 +46,10 @@ This is a fork of [the official extension](https://github.com/prettier/prettier-
 <p align="center">
   <a href="https://github.com/prettier/prettier-vscode/actions?query=workflow%3AMain">
     <img alt="Build Status" src="https://github.com/prettier/prettier-vscode/workflows/Main/badge.svg?branch=main"></a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode">
-    <img alt="VS Code Marketplace Downloads" src="https://img.shields.io/visual-studio-marketplace/d/complete.prettier-vscode"></a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode">
-    <img alt="VS Code Marketplace Installs" src="https://img.shields.io/visual-studio-marketplace/i/complete.prettier-vscode"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode-community">
+    <img alt="VS Code Marketplace Downloads" src="https://img.shields.io/visual-studio-marketplace/d/complete.prettier-vscode-community"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode-community">
+    <img alt="VS Code Marketplace Installs" src="https://img.shields.io/visual-studio-marketplace/i/complete.prettier-vscode-community"></a>
   <a href="#badge">
     <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square"></a>
   <a href="https://twitter.com/PrettierCode">
@@ -60,12 +60,12 @@ This is a fork of [the official extension](https://github.com/prettier/prettier-
 
 Install through VS Code extensions. Search for `Prettier - Code formatter`
 
-[Visual Studio Code Market Place: Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode)
+[Visual Studio Code Market Place: Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode-community)
 
 Can also be installed in VS Code: Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.
 
 ```
-ext install complete.prettier-vscode
+ext install complete.prettier-vscode-community
 ```
 
 ### Default Formatter
@@ -74,9 +74,9 @@ To ensure that this extension is used over other extensions you may have install
 
 ```json
 {
-  "editor.defaultFormatter": "complete.prettier-vscode",
+  "editor.defaultFormatter": "complete.prettier-vscode-community",
   "[javascript]": {
-    "editor.defaultFormatter": "complete.prettier-vscode"
+    "editor.defaultFormatter": "complete.prettier-vscode-community"
   }
 }
 ```
@@ -87,7 +87,7 @@ The following will use Prettier for all languages except Javascript.
 
 ```json
 {
-  "editor.defaultFormatter": "complete.prettier-vscode",
+  "editor.defaultFormatter": "complete.prettier-vscode-community",
   "[javascript]": {
     "editor.defaultFormatter": "<another formatter>"
   }
@@ -100,7 +100,7 @@ The following will use Prettier for only Javascript.
 {
   "editor.defaultFormatter": "<another formatter>",
   "[javascript]": {
-    "editor.defaultFormatter": "complete.prettier-vscode"
+    "editor.defaultFormatter": "complete.prettier-vscode-community"
   }
 }
 ```

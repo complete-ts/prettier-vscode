@@ -50,64 +50,64 @@
     }
   ],
   "settings": {
-    "editor.defaultFormatter": "complete.prettier-vscode",
+    "editor.defaultFormatter": "complete.prettier-vscode-community",
     "[javascript]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[javascriptreact]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[typescript]": {
-      "editor.defaultFormatter": "complete.prettier-vscode",
+      "editor.defaultFormatter": "complete.prettier-vscode-community",
 	  "prettier.tabWidth": 8
     },
     "[typescriptreact]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[json]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[jsonc]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[json5]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[css]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[postcss]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[less]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[scss]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[graphql]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[markdown]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[mdx]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[html]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[handlebars]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[vue]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[yaml]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "[php]": {
-      "editor.defaultFormatter": "complete.prettier-vscode"
+      "editor.defaultFormatter": "complete.prettier-vscode-community"
     },
     "prettier.trailingComma": "all",
     "prettier.prettierPath": "",
