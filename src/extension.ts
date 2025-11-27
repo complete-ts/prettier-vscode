@@ -19,7 +19,7 @@ export function activate(context: ExtensionContext): void {
   loggingService.logInfo(`Extension Name: ${extensionName}.`);
   loggingService.logInfo(`Extension Version: ${extensionVersion}.`);
 
-  // Check if the official Prettier extension is also installed
+  // Check if the official Prettier extension is also installed.
   const officialExtension = extensions.getExtension("esbenp.prettier-vscode");
   if (officialExtension) {
     const message =

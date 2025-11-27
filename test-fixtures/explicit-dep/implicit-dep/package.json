@@ -1,8 +1,8 @@
 {
   "name": "implicit-dep",
   "version": "1.0.0",
-  "description": "Test folder for implicit dep within explicit dep",
   "private": true,
+  "description": "Test folder for implicit dep within explicit dep",
   "author": "jhilker",
   "license": "MIT",
   "devDependencies": {

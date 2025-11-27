@@ -1,8 +1,8 @@
 {
   "name": "test-explicit-dep",
   "version": "1.0.0",
-  "description": "Test explicit prettier dep",
   "private": true,
+  "description": "Test explicit prettier dep",
   "author": "jhilker",
   "license": "MIT",
   "devDependencies": {

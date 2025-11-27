@@ -1,8 +1,8 @@
 {
   "name": "plugins-pnpm",
   "version": "1.0.0",
-  "description": "Test resolve plugin in pnpm",
   "private": true,
+  "description": "Test resolve plugin in pnpm",
   "devDependencies": {
     "prettier": "2.8.8",
     "@prettier/plugin-php": "0.19.6",

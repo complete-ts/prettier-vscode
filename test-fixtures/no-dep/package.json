@@ -1,8 +1,8 @@
 {
   "name": "test-no-dep",
   "version": "1.0.0",
-  "description": "Test folder for no prettier dependency",
   "private": true,
+  "description": "Test folder for no prettier dependency",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
