@@ -1,16 +1,16 @@
-/**
- * Replace [Unreleased] with [${package.version}]
- * sed like.
- */
-const fs = require("fs");
+/* eslint-disable no-console */
+
+// Replace [Unreleased] with [${package.version}] sed like.
+
+const fs = require("node:fs");
 
 const v = process.env.npm_package_version;
 const CHANGELOG = "CHANGELOG.md";
 
-fs.readFile(CHANGELOG, (error, data) => {
+fs.readFile(CHANGELOG, (_error, data) => {
   const stringData = data.toString("utf8");
   const updated = stringData.replace(
-    /## \[Unreleased\](?!\s*## )/, // None empty Unreleased block
+    /## \[Unreleased](?!\s*## )/, // None empty Unreleased block
     `## [Unreleased]\n\n## [${v}]`,
   );
 

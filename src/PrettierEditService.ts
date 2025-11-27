@@ -268,7 +268,7 @@ export class PrettierEditService implements Disposable {
   private readonly getSelectors = async (
     prettierInstance: PrettierModule | PrettierInstance,
     documentUri?: Uri,
-    workspaceFolderUri?: Uri,
+    workspaceFolderURI?: Uri,
   ): Promise<ISelectors> => {
     const plugins: Array<string | URL | PrettierPlugin> = [];
 
@@ -305,37 +305,40 @@ export class PrettierEditService implements Disposable {
       }
     }
     this.allLanguages = this.allLanguages.filter(
+      // eslint-disable-next-line complete/prefer-readonly-parameter-types
       (value, index, self) => self.indexOf(value) === index,
     );
 
-    for (const lang of languages) {
-      if (lang && lang.extensions) {
-        this.allExtensions.push(...lang.extensions);
+    for (const language of languages) {
+      if (language.extensions) {
+        this.allExtensions.push(...language.extensions);
       }
     }
     this.allExtensions = this.allExtensions.filter(
+      // eslint-disable-next-line complete/prefer-readonly-parameter-types
       (value, index, self) => self.indexOf(value) === index,
     );
 
     const { documentSelectors } = getConfig();
 
     // Language selector for file extensions.
-    const extensionLanguageSelector: DocumentFilter[] = workspaceFolderUri
-      ? this.allExtensions.length === 0
+    // eslint-disable-next-line no-nested-ternary
+    const extensionLanguageSelector: DocumentFilter[] = workspaceFolderURI === undefined
+      ? []
+      : this.allExtensions.length === 0
         ? []
         : [
             {
-              pattern: `${workspaceFolderUri.fsPath}/**/*.{${this.allExtensions
+              pattern: `${workspaceFolderURI.fsPath}/**/*.{${this.allExtensions
                 .map((e) => e.slice(1))
                 .join(",")}}`,
               scheme: "file",
             },
-          ]
-      : [];
+          ];
 
-    const customLanguageSelectors: DocumentFilter[] = workspaceFolderUri
+    const customLanguageSelectors: DocumentFilter[] = workspaceFolderURI
       ? documentSelectors.map((pattern) => ({
-          pattern: `${workspaceFolderUri.fsPath}/${pattern}`,
+          pattern: `${workspaceFolderURI.fsPath}/${pattern}`,
           scheme: "file",
         }))
       : [];
@@ -365,8 +368,8 @@ export class PrettierEditService implements Disposable {
   ): Promise<TextEdit[]> => {
     const startTime = Date.now();
     const result = await this.format(document.getText(), document, options);
-    if (!result) {
-      // No edits happened, return never so VS Code can try other formatters
+    if (result === undefined) {
+      // No edits happened, return never so VS Code can try other formatters.
       return [];
     }
     const duration = Date.now() - startTime;
@@ -375,6 +378,7 @@ export class PrettierEditService implements Disposable {
     return [edit];
   };
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   private minimalEdit(document: TextDocument, string1: string) {
     const string0 = document.getText();
     // Length of common prefix.
@@ -384,7 +388,7 @@ export class PrettierEditService implements Disposable {
       i < string1.length &&
       string0[i] === string1[i]
     ) {
-      ++i;
+      i++;
     }
     // Length of common suffix.
     let j = 0;
@@ -393,9 +397,9 @@ export class PrettierEditService implements Disposable {
       i + j < string1.length &&
       string0[string0.length - j - 1] === string1[string1.length - j - 1]
     ) {
-      ++j;
+      j++;
     }
-    const newText = string1.substring(i, string1.length - j);
+    const newText = string1.slice(i, string1.length - j);
     const pos0 = document.positionAt(i);
     const pos1 = document.positionAt(string0.length - j);
 
@@ -440,12 +444,12 @@ export class PrettierEditService implements Disposable {
     }
 
     let resolvedIgnorePath: string | undefined;
-    if (vscodeConfig.ignorePath) {
+    if (vscodeConfig.ignorePath !== "") {
       resolvedIgnorePath = await this.moduleResolver.getResolvedIgnorePath(
         fileName,
         vscodeConfig.ignorePath,
       );
-      if (resolvedIgnorePath) {
+      if (resolvedIgnorePath !== undefined) {
         this.loggingService.logInfo(
           `Using ignore file (if present) at ${resolvedIgnorePath}`,
         );
@@ -453,7 +457,7 @@ export class PrettierEditService implements Disposable {
     }
 
     let fileInfo: PrettierFileInfoResult | undefined;
-    if (fileName) {
+    if (fileName !== "") {
       fileInfo = await prettierInstance.getFileInfo(fileName, {
         ignorePath: resolvedIgnorePath,
         plugins: resolvedConfig?.plugins?.filter(
@@ -472,7 +476,7 @@ export class PrettierEditService implements Disposable {
     }
 
     let parser: PrettierBuiltInParserName | undefined;
-    if (fileInfo && fileInfo.inferredParser) {
+    if (fileInfo && typeof fileInfo.inferredParser === "string") {
       parser = fileInfo.inferredParser;
     } else if (languageId !== "plaintext") {
       // Don't attempt VS Code language for plaintext because we never have a formatter for
@@ -481,13 +485,14 @@ export class PrettierEditService implements Disposable {
       this.loggingService.logWarning(
         "Parser not inferred, trying VS Code language.",
       );
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       const { languages } = await prettierInstance.getSupportInfo({
         plugins: [],
       });
       parser = getParserFromLanguageId(languages, uri, languageId);
     }
 
-    if (!parser) {
+    if (parser === undefined) {
       this.loggingService.logError(
         "Failed to resolve a parser, skipping file. If you registered a custom file extension, be sure to configure the parser.",
       );
@@ -540,7 +545,6 @@ export class PrettierEditService implements Disposable {
       vsOpts.insertPragma = vsCodeConfig.insertPragma;
       vsOpts.singleAttributePerLine = vsCodeConfig.singleAttributePerLine;
       vsOpts.bracketSameLine = vsCodeConfig.bracketSameLine;
-      vsOpts.jsxBracketSameLine = vsCodeConfig.jsxBracketSameLine;
       vsOpts.jsxSingleQuote = vsCodeConfig.jsxSingleQuote;
       vsOpts.printWidth = vsCodeConfig.printWidth;
       vsOpts.proseWrap = vsCodeConfig.proseWrap;
@@ -565,8 +569,8 @@ export class PrettierEditService implements Disposable {
 
     let rangeFormattingOptions: RangeFormattingOptions | undefined;
     if (
-      extensionFormattingOptions.rangeEnd &&
-      extensionFormattingOptions.rangeStart
+      extensionFormattingOptions.rangeEnd !== undefined &&
+      extensionFormattingOptions.rangeStart !== undefined
     ) {
       rangeFormattingOptions = {
         rangeEnd: extensionFormattingOptions.rangeEnd,

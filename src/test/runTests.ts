@@ -32,20 +32,20 @@ async function createSettings(): Promise<string> {
 
 async function main() {
   try {
-    // The folder containing the Extension Manifest package.json Passed to
-    // `--extensionDevelopmentPath`
+    // The folder containing the Extension Manifest package.json. Passed to
+    // `--extensionDevelopmentPath`.
     const extensionDevelopmentPath = path.resolve(__dirname, "../../");
 
-    // The path to the extension test runner script Passed to --extensionTestsPath
+    // The path to the extension test runner script. Passed to --extensionTestsPath.
     const extensionTestsPath = path.resolve(__dirname, "./suite/index");
 
-    // The path to the workspace file
+    // The path to the workspace file.
     const workspacePath = path.resolve("test-fixtures", "test.code-workspace");
 
-    // Default settings for test env
+    // Default settings for test env.
     const userDataDirectory = await createSettings();
 
-    // Download VS Code, unzip it and run the integration test
+    // Download VS Code, unzip it and run the integration test.
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
@@ -74,6 +74,8 @@ async function main() {
   }
 }
 
-main().catch((error) => {
+// eslint-disable-next-line unicorn/prefer-top-level-await
+main().catch((error: unknown) => {
+  // eslint-disable-next-line no-console
   console.error(error);
 });

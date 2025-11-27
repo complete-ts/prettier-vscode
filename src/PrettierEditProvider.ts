@@ -12,20 +12,23 @@ import type { ExtensionFormattingOptions } from "./types.js";
 export class PrettierEditProvider
   implements DocumentRangeFormattingEditProvider, DocumentFormattingEditProvider
 {
-  constructor(
     private readonly provideEdits: (
       document: TextDocument,
       options: ExtensionFormattingOptions,
-    ) => Promise<TextEdit[]>,
-  ) {}
+    ) => Promise<TextEdit[]>
+
+  constructor(
+  provideEdits: typeof this.provideEdits
+  ) {
+    this.provideEdits = provideEdits;
+  }
 
   public async provideDocumentRangeFormattingEdits(
     document: TextDocument,
     range: Range,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options: FormattingOptions,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    token: CancellationToken,
+    _options: FormattingOptions,
+    _token: CancellationToken,
+  // eslint-disable-next-line complete/no-mutable-return
   ): Promise<TextEdit[]> {
     return await this.provideEdits(document, {
       rangeEnd: document.offsetAt(range.end),
@@ -36,10 +39,9 @@ export class PrettierEditProvider
 
   public async provideDocumentFormattingEdits(
     document: TextDocument,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options: FormattingOptions,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    token: CancellationToken,
+    _options: FormattingOptions,
+    _token: CancellationToken,
+  // eslint-disable-next-line complete/no-mutable-return
   ): Promise<TextEdit[]> {
     return await this.provideEdits(document, {
       force: false,

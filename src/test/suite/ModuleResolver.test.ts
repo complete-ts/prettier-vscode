@@ -13,7 +13,9 @@ import {
 
 suite("Test ModuleResolver", function tests() {
   let moduleResolver: ModuleResolver;
+  // eslint-disable-next-line complete/no-object-any
   let logErrorSpy: sinon.SinonSpy;
+  // eslint-disable-next-line complete/no-object-any
   let logDebugSpy: sinon.SinonSpy;
 
   // eslint-disable-next-line @typescript-eslint/no-invalid-this
@@ -58,9 +60,6 @@ suite("Test ModuleResolver", function tests() {
         fileName,
       )) as PrettierNodeModule;
 
-      if (!prettierInstance) {
-        assert.fail("Prettier is undefined.");
-      }
       assert.notStrictEqual(prettierInstance, prettier);
       assert.strictEqual(prettierInstance.version, "2.0.2");
     });

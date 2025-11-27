@@ -117,6 +117,7 @@ const browserConfig = /** @type WebpackConfig */ {
     new webpack.NormalModuleReplacementPlugin(/^node:path$/, "path-browserify"),
     new webpack.NormalModuleReplacementPlugin(/^node:util$/, "util/"),
     new webpack.NormalModuleReplacementPlugin(/^node:os$/, (resource) => {
+      // eslint-disable-next-line no-param-reassign
       resource.request = "os";
     }),
     new webpack.ProvidePlugin({
