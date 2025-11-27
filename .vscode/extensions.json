@@ -4,6 +4,6 @@
   "recommendations": [
     "dbaeumer.vscode-eslint", // The TypeScript linter
     "complete.prettier-vscode", // The TypeScript formatter
-    "streetsidesoftware.code-spell-checker" // A spell-checker extension based on CSpell
-  ]
+    "streetsidesoftware.code-spell-checker", // A spell-checker extension based on CSpell
+  ],
 }

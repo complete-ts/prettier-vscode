@@ -1,11 +1,11 @@
+import { assertDefined } from "complete-common";
+import type { Done } from "mocha";
 import assert from "node:assert";
 import { readFile, rename } from "node:fs";
-import type { Done } from "mocha";
 import path from "node:path";
-import * as prettier from "prettier";
 import { promisify } from "node:util";
+import * as prettier from "prettier";
 import * as vscode from "vscode";
-import { assertDefined } from "complete-common";
 
 const readFileAsync: (filePath: string, encoding: "utf8") => Promise<string> =
   promisify(readFile);

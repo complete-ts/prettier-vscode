@@ -1,4 +1,6 @@
 import type { FileInfoOptions, Options, ResolveConfigOptions } from "prettier";
+import { loadNodeModule } from "./ModuleLoader.js";
+import type { PrettierNodeModule } from "./ModuleResolver.js";
 import type {
   PrettierInstance,
   PrettierInstanceConstructor,
@@ -8,8 +10,6 @@ import type {
   PrettierPlugin,
   PrettierSupportLanguage,
 } from "./types.js";
-import type { PrettierNodeModule } from "./ModuleResolver.js";
-import { loadNodeModule } from "./ModuleLoader.js";
 
 export const PrettierMainThreadInstance: PrettierInstanceConstructor = class PrettierMainThreadInstance
   implements PrettierInstance

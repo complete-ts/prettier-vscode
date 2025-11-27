@@ -1,8 +1,8 @@
 import os from "node:os";
 import path from "node:path";
 import * as semver from "semver";
-import { Uri, workspace } from "vscode";
 import type { TextDocument } from "vscode";
+import { Uri, workspace } from "vscode";
 import type { PrettierVSCodeConfig } from "./types.js";
 
 export function getWorkspaceRelativePath(
@@ -13,9 +13,9 @@ export function getWorkspaceRelativePath(
 
   // In case the user wants to use ~/.prettierrc on Mac.
   if (
-    process.platform === "darwin" &&
-    pathToResolve.startsWith("~") &&
-    homeDir !== ""
+    process.platform === "darwin"
+    && pathToResolve.startsWith("~")
+    && homeDir !== ""
   ) {
     return pathToResolve.replace(/^~(?=$|\/|\\)/, homeDir);
   }

@@ -1,6 +1,11 @@
-import { Worker } from "node:worker_threads";
-import url from "node:url";
 import path from "node:path";
+import url from "node:url";
+import { Worker } from "node:worker_threads";
+import type { Options, ResolveConfigOptions } from "prettier";
+import type {
+  PrettierInstance,
+  PrettierInstanceConstructor,
+} from "./PrettierInstance.js";
 import type {
   PrettierFileInfoOptions,
   PrettierFileInfoResult,
@@ -8,11 +13,6 @@ import type {
   PrettierPlugin,
   PrettierSupportLanguage,
 } from "./types.js";
-import type {
-  PrettierInstance,
-  PrettierInstanceConstructor,
-} from "./PrettierInstance.js";
-import type { ResolveConfigOptions, Options } from "prettier";
 
 interface WorkerMessage {
   type: "import" | "callMethod";

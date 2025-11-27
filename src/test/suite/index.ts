@@ -1,5 +1,5 @@
-import { glob } from "node:fs/promises";
 import Mocha from "mocha";
+import { glob } from "node:fs/promises";
 import path from "node:path";
 
 export async function run(): Promise<void> {

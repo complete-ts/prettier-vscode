@@ -1,5 +1,6 @@
+import { assertObject, assertStringNotEmpty, isObject } from "complete-common";
+import { findUpStop, findUpSync } from "find-up";
 import { execSync } from "node:child_process";
-import { findUpSync, findUpStop } from "find-up";
 import fs from "node:fs";
 import path from "node:path";
 import * as prettier from "prettier";
@@ -17,6 +18,10 @@ import {
   UNTRUSTED_WORKSPACE_USING_BUNDLED_PRETTIER,
   USING_BUNDLED_PRETTIER,
 } from "./message.js";
+import { loadNodeModule, resolveConfigPlugins } from "./ModuleLoader.js";
+import type { PrettierInstance } from "./PrettierInstance.js";
+import { PrettierMainThreadInstance } from "./PrettierMainThreadInstance.js";
+import { PrettierWorkerInstance } from "./PrettierWorkerInstance.js";
 import type {
   ModuleResolverInterface,
   PackageManagers,
@@ -25,11 +30,6 @@ import type {
   PrettierVSCodeConfig,
 } from "./types.js";
 import { getConfig, getWorkspaceRelativePath, isAboveV3 } from "./util.js";
-import { PrettierWorkerInstance } from "./PrettierWorkerInstance.js";
-import type { PrettierInstance } from "./PrettierInstance.js";
-import { PrettierMainThreadInstance } from "./PrettierMainThreadInstance.js";
-import { loadNodeModule, resolveConfigPlugins } from "./ModuleLoader.js";
-import { assertObject, assertStringNotEmpty, isObject } from "complete-common";
 
 const minPrettierVersion = "1.13.0";
 
@@ -294,9 +294,9 @@ export class ModuleResolver implements ModuleResolverInterface {
             // https://stackoverflow.com/a/45242825
             const relative = path.relative(folder, fileName);
             return (
-              relative !== "" &&
-              !relative.startsWith("..") &&
-              !path.isAbsolute(relative)
+              relative !== ""
+              && !relative.startsWith("..")
+              && !path.isAbsolute(relative)
             );
           })
           // Sort folders innermost to outermost.
@@ -410,10 +410,10 @@ export class ModuleResolver implements ModuleResolverInterface {
     resolvedConfig &&= resolveConfigPlugins(resolvedConfig, fileName);
 
     if (
-      !isVirtual &&
-      vscodeConfig.configPath === undefined &&
-      configPath === undefined &&
-      vscodeConfig.requireConfig
+      !isVirtual
+      && vscodeConfig.configPath === undefined
+      && configPath === undefined
+      && vscodeConfig.requireConfig
     ) {
       this.loggingService.logInfo(
         "Require config set to true and no config present. Skipping file.",

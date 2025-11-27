@@ -47,9 +47,9 @@ export function resolveConfigPlugins(
     // eslint-disable-next-line no-param-reassign
     config.plugins = config.plugins.map((plugin) => {
       if (
-        typeof plugin === "string" &&
-        !plugin.startsWith(".") &&
-        !path.isAbsolute(plugin)
+        typeof plugin === "string"
+        && !plugin.startsWith(".")
+        && !path.isAbsolute(plugin)
       ) {
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         return resolveNodeModule(plugin, { paths: [fileName] }) || plugin;

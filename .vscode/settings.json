@@ -9,7 +9,7 @@
   "editor.tabSize": 2,
 
   "files.associations": {
-    ".env*": "shellscript" // e.g. ".env.example" is the same as ".env".
+    ".env*": "shellscript", // e.g. ".env.example" is the same as ".env".
   },
 
   // Always use "lf" to be consistent with all platforms.
@@ -34,7 +34,7 @@
     "LICENSE": true,
     "package-lock.json": true,
     "pnpm-lock.yaml": true,
-    "yarn.lock": true
+    "yarn.lock": true,
   },
 
   // ------------------
@@ -70,13 +70,13 @@
   // Automatically run the formatter when certain files are saved.
   "[javascript][typescript][javascriptreact][typescriptreact]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
+      "source.fixAll.eslint": "explicit",
     },
     "editor.defaultFormatter": "complete.prettier-vscode",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   },
   "[css][html][json][jsonc][markdown][postcss][yaml]": {
     "editor.defaultFormatter": "complete.prettier-vscode",
-    "editor.formatOnSave": true
-  }
+    "editor.formatOnSave": true,
+  },
 }

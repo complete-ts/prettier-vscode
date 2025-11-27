@@ -6,6 +6,7 @@ import type {
   Uri,
 } from "vscode";
 import { languages, Range, TextEdit, window, workspace } from "vscode";
+import { FormatterStatus } from "./FormatterStatus.js";
 import { getParserFromLanguageId } from "./languageFilters.js";
 import type { LoggingService } from "./LoggingService.js";
 import { RESTART_TO_ENABLE } from "./message.js";
@@ -23,7 +24,6 @@ import type {
   RangeFormattingOptions,
 } from "./types.js";
 import { getConfig, isAboveV3 } from "./util.js";
-import { FormatterStatus } from "./FormatterStatus.js";
 
 interface ISelectors {
   rangeLanguageSelector: readonly DocumentFilter[];
@@ -275,9 +275,9 @@ export class PrettierEditService implements Disposable {
     // Prettier v3 does not load plugins automatically So need to resolve config to get plugins
     // info.
     if (
-      documentUri &&
-      "resolveConfig" in prettierInstance &&
-      isAboveV3(prettierInstance.version)
+      documentUri
+      && "resolveConfig" in prettierInstance
+      && isAboveV3(prettierInstance.version)
     ) {
       const resolvedConfig = await this.moduleResolver.resolveConfig(
         prettierInstance,
@@ -385,18 +385,18 @@ export class PrettierEditService implements Disposable {
     // Length of common prefix.
     let i = 0;
     while (
-      i < string0.length &&
-      i < string1.length &&
-      string0[i] === string1[i]
+      i < string0.length
+      && i < string1.length
+      && string0[i] === string1[i]
     ) {
       i++;
     }
     // Length of common suffix.
     let j = 0;
     while (
-      i + j < string0.length &&
-      i + j < string1.length &&
-      string0[string0.length - j - 1] === string1[string1.length - j - 1]
+      i + j < string0.length
+      && i + j < string1.length
+      && string0[string0.length - j - 1] === string1[string1.length - j - 1]
     ) {
       j++;
     }
@@ -570,8 +570,8 @@ export class PrettierEditService implements Disposable {
 
     let rangeFormattingOptions: RangeFormattingOptions | undefined;
     if (
-      extensionFormattingOptions.rangeEnd !== undefined &&
-      extensionFormattingOptions.rangeStart !== undefined
+      extensionFormattingOptions.rangeEnd !== undefined
+      && extensionFormattingOptions.rangeStart !== undefined
     ) {
       rangeFormattingOptions = {
         rangeEnd: extensionFormattingOptions.rangeEnd,

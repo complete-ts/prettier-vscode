@@ -2,14 +2,14 @@ import assert from "node:assert";
 import path from "node:path";
 import * as prettier from "prettier";
 import * as sinon from "sinon";
-import { getWorkspaceFolderURI } from "./format.test.js";
-import type { PrettierNodeModule } from "../../ModuleResolver.js";
-import { ModuleResolver } from "../../ModuleResolver.js";
 import { LoggingService } from "../../LoggingService.js";
 import {
   OUTDATED_PRETTIER_VERSION_MESSAGE,
   USING_BUNDLED_PRETTIER,
 } from "../../message.js";
+import type { PrettierNodeModule } from "../../ModuleResolver.js";
+import { ModuleResolver } from "../../ModuleResolver.js";
+import { getWorkspaceFolderURI } from "./format.test.js";
 
 suite("Test ModuleResolver", function tests() {
   let moduleResolver: ModuleResolver;

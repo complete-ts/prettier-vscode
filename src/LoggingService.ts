@@ -18,10 +18,10 @@ export class LoggingService {
    */
   public logDebug(message: string, data?: unknown): void {
     if (
-      this.logLevel === "NONE" ||
-      this.logLevel === "INFO" ||
-      this.logLevel === "WARN" ||
-      this.logLevel === "ERROR"
+      this.logLevel === "NONE"
+      || this.logLevel === "INFO"
+      || this.logLevel === "WARN"
+      || this.logLevel === "ERROR"
     ) {
       return;
     }
@@ -40,9 +40,9 @@ export class LoggingService {
    */
   public logInfo(message: string, data?: unknown): void {
     if (
-      this.logLevel === "NONE" ||
-      this.logLevel === "WARN" ||
-      this.logLevel === "ERROR"
+      this.logLevel === "NONE"
+      || this.logLevel === "WARN"
+      || this.logLevel === "ERROR"
     ) {
       return;
     }

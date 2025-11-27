@@ -7,10 +7,10 @@
     "complete-tsconfig/tsconfig.base.json",
 
     // https://github.com/complete-ts/complete/blob/main/packages/complete-tsconfig/tsconfig.node.json
-    "complete-tsconfig/tsconfig.node.json"
+    "complete-tsconfig/tsconfig.node.json",
   ],
 
   "compilerOptions": {
-    "outDir": "out"
-  }
+    "outDir": "out",
+  },
 }

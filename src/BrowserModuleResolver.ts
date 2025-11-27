@@ -1,13 +1,4 @@
-import type {
-  PrettierFileInfoOptions,
-  PrettierFileInfoResult,
-  PrettierSupportLanguage,
-  PrettierModule,
-  PrettierOptions,
-  ModuleResolverInterface,
-  PrettierVSCodeConfig,
-} from "./types.js";
-import * as prettierStandalone from "prettier/standalone";
+import type { ResolveConfigOptions } from "prettier";
 import * as angularPlugin from "prettier/plugins/angular";
 import * as babelPlugin from "prettier/plugins/babel";
 import * as glimmerPlugin from "prettier/plugins/glimmer";
@@ -17,10 +8,19 @@ import * as markdownPlugin from "prettier/plugins/markdown";
 import * as meriyahPlugin from "prettier/plugins/meriyah";
 import * as typescriptPlugin from "prettier/plugins/typescript";
 import * as yamlPlugin from "prettier/plugins/yaml";
+import * as prettierStandalone from "prettier/standalone";
 import type { TextDocument, Uri } from "vscode";
 import type { LoggingService } from "./LoggingService.js";
+import type {
+  ModuleResolverInterface,
+  PrettierFileInfoOptions,
+  PrettierFileInfoResult,
+  PrettierModule,
+  PrettierOptions,
+  PrettierSupportLanguage,
+  PrettierVSCodeConfig,
+} from "./types.js";
 import { getWorkspaceRelativePath } from "./util.js";
-import type { ResolveConfigOptions } from "prettier";
 
 const plugins = [
   angularPlugin,

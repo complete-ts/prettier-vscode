@@ -1,7 +1,7 @@
-import path from "node:path";
 import { runTests } from "@vscode/test-electron";
-import * as tmp from "tmp";
 import fs from "fs-extra";
+import path from "node:path";
+import * as tmp from "tmp";
 
 async function createTempDir() {
   return await new Promise<string>((resolve, reject) => {

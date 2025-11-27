@@ -20,9 +20,9 @@ export function getParserFromLanguageId(
 
   const language = languages.find(
     (lang) =>
-      lang.extensions !== undefined &&
-      Array.isArray(lang.vscodeLanguageIds) &&
-      lang.vscodeLanguageIds.includes(languageID),
+      lang.extensions !== undefined
+      && Array.isArray(lang.vscodeLanguageIds)
+      && lang.vscodeLanguageIds.includes(languageID),
   );
 
   if (language) {

@@ -2,12 +2,12 @@ import type { ExtensionContext } from "vscode";
 import { commands, workspace } from "vscode";
 import { createConfigFile } from "./commands.js";
 import { LoggingService } from "./LoggingService.js";
+import { EXTENSION_DISABLED, RESTART_TO_ENABLE } from "./message.js";
 import { ModuleResolver } from "./ModuleResolver.js";
 import { PrettierEditService } from "./PrettierEditService.js";
 import { StatusBar } from "./StatusBar.js";
 import { TemplateService } from "./TemplateService.js";
 import { getConfig } from "./util.js";
-import { RESTART_TO_ENABLE, EXTENSION_DISABLED } from "./message.js";
 
 // The application insights key (also known as instrumentation key).
 const extensionName = process.env["EXTENSION_NAME"] ?? "dev.prettier-vscode";

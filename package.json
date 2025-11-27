@@ -1,30 +1,11 @@
 {
   "name": "prettier-vscode",
   "displayName": "Prettier - Code formatter",
-  "description": "Code formatter using prettier",
-  "type": "commonjs",
   "version": "11.0.0",
-  "publisher": "complete",
-  "author": "Prettier <@prettiercode>",
-  "galleryBanner": {
-    "color": "#ffe04b",
-    "theme": "light"
-  },
-  "sponsor": {
-    "url": "https://opencollective.com/prettier"
-  },
-  "homepage": "https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/prettier/prettier-vscode.git"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/prettier/prettier-vscode/issues"
-  },
-  "engines": {
-    "vscode": "^1.80.0"
-  },
+  "description": "Code formatter using prettier",
+  "categories": [
+    "Formatters"
+  ],
   "keywords": [
     "multi-root ready",
     "prettier",
@@ -59,82 +40,46 @@
     "yaml",
     "yml"
   ],
-  "categories": [
-    "Formatters"
-  ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "icon": "icon.png",
+  "homepage": "https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode",
+  "bugs": {
+    "url": "https://github.com/prettier/prettier-vscode/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prettier/prettier-vscode.git"
+  },
+  "license": "MIT",
+  "author": "Prettier <@prettiercode>",
+  "publisher": "complete",
+  "type": "commonjs",
   "main": "./dist/extension.js",
   "browser": "./dist/web-extension.js",
   "scripts": {
+    "chrome": "npm run webpack && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. .",
     "clean": "node ./scripts/clean.js",
     "lint": "eslint",
-    "pretest": "npm run test-compile && cd test-fixtures/plugins && npm ci && cd ../plugins-pnpm && pnpm i --frozen-lockfile && cd ../outdated && npm ci && cd ../module && npm ci && cd ../specific-version && npm ci && cd ../explicit-dep && npm ci && cd implicit-dep && npm ci && cd ../../v3 && npm ci && cd ../plugin-tailwindcss && npm ci && cd ../v3-plugins && npm ci && cd ../v3-plugin-override && npm ci",
     "prettier": "prettier --write '**/*.{ts,json,md,hbs,yml,js}'",
-    "test-compile": "npm run clean && tsc -p ./ && npm run webpack && cp -r ./src/worker ./out",
+    "pretest": "npm run test-compile && cd test-fixtures/plugins && npm ci && cd ../plugins-pnpm && pnpm i --frozen-lockfile && cd ../outdated && npm ci && cd ../module && npm ci && cd ../specific-version && npm ci && cd ../explicit-dep && npm ci && cd implicit-dep && npm ci && cd ../../v3 && npm ci && cd ../plugin-tailwindcss && npm ci && cd ../v3-plugins && npm ci && cd ../v3-plugin-override && npm ci",
     "test": "node ./out/test/runTests.js",
+    "test-compile": "npm run clean && tsc -p ./ && npm run webpack && cp -r ./src/worker ./out",
     "version": "node ./scripts/version.js && git add CHANGELOG.md",
     "vscode:prepublish": "webpack --mode production",
     "watch": "tsc --watch -p ./",
-    "webpack-dev": "webpack --mode development --watch",
     "webpack": "webpack --mode development",
-    "chrome": "npm run webpack && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ."
-  },
-  "devDependencies": {
-    "@types/fs-extra": "11.0.4",
-    "@types/mocha": "10.0.10",
-    "@types/node": "24.10.1",
-    "@types/resolve": "1.20.6",
-    "@types/semver": "7.7.1",
-    "@types/sinon": "21.0.0",
-    "@types/tmp": "0.2.6",
-    "@vscode/test-electron": "2.5.2",
-    "@vscode/test-web": "0.0.76",
-    "complete-lint": "5.1.1",
-    "copy-webpack-plugin": "13.0.1",
-    "fs-extra": "11.3.2",
-    "mocha": "11.7.5",
-    "path-browserify": "1.0.1",
-    "process": "0.11.10",
-    "sinon": "21.0.0",
-    "tmp": "0.2.5",
-    "ts-loader": "9.5.4",
-    "typescript": "5.9.3",
-    "util": "0.12.5",
-    "vsce": "2.15.0",
-    "vscode-nls-dev": "4.0.4",
-    "webpack": "5.103.0",
-    "webpack-cli": "6.0.1"
-  },
-  "dependencies": {
-    "@types/vscode": "1.106.1",
-    "complete-common": "2.10.0",
-    "find-up": "8.0.0",
-    "prettier": "3.6.2",
-    "resolve": "1.22.11",
-    "semver": "7.7.3",
-    "vscode-nls": "5.2.0"
-  },
-  "capabilities": {
-    "virtualWorkspaces": true,
-    "untrustedWorkspaces": {
-      "supported": "limited",
-      "description": "%ext.capabilities.untrustedWorkspaces.description%",
-      "restrictedConfigurations": [
-        "prettier.documentSelectors",
-        "prettier.resolveGlobalModules",
-        "prettier.ignorePath",
-        "prettier.prettierPath",
-        "prettier.configPath",
-        "prettier.useEditorConfig",
-        "prettier.resolveGlobalModules",
-        "prettier.withNodeModules"
-      ]
-    }
+    "webpack-dev": "webpack --mode development --watch"
   },
   "contributes": {
+    "commands": [
+      {
+        "command": "prettier.createConfigFile",
+        "title": "%ext.command.createConfigFile.title%"
+      },
+      {
+        "command": "prettier.forceFormatDocument",
+        "title": "%ext.command.forceFormatDocument.title%",
+        "when": "editorFocus"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "%ext.config.title%",
@@ -429,18 +374,73 @@
           ".handlebars"
         ]
       }
-    ],
-    "commands": [
-      {
-        "command": "prettier.createConfigFile",
-        "title": "%ext.command.createConfigFile.title%"
-      },
-      {
-        "command": "prettier.forceFormatDocument",
-        "title": "%ext.command.forceFormatDocument.title%",
-        "when": "editorFocus"
-      }
     ]
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "dependencies": {
+    "@types/vscode": "1.106.1",
+    "complete-common": "2.10.0",
+    "find-up": "8.0.0",
+    "prettier": "3.6.2",
+    "resolve": "1.22.11",
+    "semver": "7.7.3",
+    "vscode-nls": "5.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "11.0.4",
+    "@types/mocha": "10.0.10",
+    "@types/node": "24.10.1",
+    "@types/resolve": "1.20.6",
+    "@types/semver": "7.7.1",
+    "@types/sinon": "21.0.0",
+    "@types/tmp": "0.2.6",
+    "@vscode/test-electron": "2.5.2",
+    "@vscode/test-web": "0.0.76",
+    "complete-lint": "5.1.1",
+    "copy-webpack-plugin": "13.0.1",
+    "fs-extra": "11.3.2",
+    "mocha": "11.7.5",
+    "path-browserify": "1.0.1",
+    "process": "0.11.10",
+    "sinon": "21.0.0",
+    "tmp": "0.2.5",
+    "ts-loader": "9.5.4",
+    "typescript": "5.9.3",
+    "util": "0.12.5",
+    "vsce": "2.15.0",
+    "vscode-nls-dev": "4.0.4",
+    "webpack": "5.103.0",
+    "webpack-cli": "6.0.1"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#ffe04b",
+    "theme": "light"
+  },
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "%ext.capabilities.untrustedWorkspaces.description%",
+      "restrictedConfigurations": [
+        "prettier.documentSelectors",
+        "prettier.resolveGlobalModules",
+        "prettier.ignorePath",
+        "prettier.prettierPath",
+        "prettier.configPath",
+        "prettier.useEditorConfig",
+        "prettier.resolveGlobalModules",
+        "prettier.withNodeModules"
+      ]
+    }
+  },
+  "sponsor": {
+    "url": "https://opencollective.com/prettier"
   },
   "__metadata": {
     "id": "96fa4707-6983-4489-b7c5-d5ffdfdcce90",
