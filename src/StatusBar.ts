@@ -1,27 +1,21 @@
-import {
+import type {
   Disposable,
   DocumentSelector,
-  languages,
   LanguageStatusItem,
+  StatusBarItem,
+} from "vscode";
+import {
+  languages,
   LanguageStatusSeverity,
   StatusBarAlignment,
-  StatusBarItem,
   ThemeColor,
   window,
 } from "vscode";
-
-export enum FormatterStatus {
-  Ready = "check-all",
-  Success = "check",
-  Ignore = "x",
-  Warn = "warning",
-  Error = "alert",
-  Disabled = "circle-slash",
-}
+import { FormatterStatus } from "./FormatterStatus.js";
 
 export class StatusBar implements Disposable {
-  private statusBarItem: StatusBarItem;
-  private languageStatusItem: LanguageStatusItem;
+  private readonly statusBarItem: StatusBarItem;
+  private readonly languageStatusItem: LanguageStatusItem;
   constructor() {
     this.statusBarItem = window.createStatusBarItem(
       "prettier.status",
@@ -47,42 +41,43 @@ export class StatusBar implements Disposable {
     };
   }
 
-  public updateConfig({ selector }: { selector: DocumentSelector }) {
+  public updateConfig({ selector }: { selector: DocumentSelector }): void {
     this.languageStatusItem.selector = selector;
   }
 
-  /**
-   * Update the statusBarItem message and show the statusBarItem
-   *
-   * @param icon The the icon to use
-   */
+  /** Update the statusBarItem message and show the statusBarItem. */
   public update(result: FormatterStatus): void {
     this.statusBarItem.text = `$(${result.toString()}) Prettier`;
     switch (result) {
       case FormatterStatus.Ignore:
-      case FormatterStatus.Warn:
+      case FormatterStatus.Warn: {
         this.statusBarItem.backgroundColor = new ThemeColor(
           "statusBarItem.warningBackground",
         );
         this.languageStatusItem.severity = LanguageStatusSeverity.Warning;
         break;
-      case FormatterStatus.Error:
+      }
+
+      case FormatterStatus.Error: {
         this.statusBarItem.backgroundColor = new ThemeColor(
           "statusBarItem.errorBackground",
         );
         this.languageStatusItem.severity = LanguageStatusSeverity.Error;
         break;
-      default:
+      }
+
+      default: {
         this.statusBarItem.backgroundColor = new ThemeColor(
-          "statusBarItem.fourgroundBackground",
+          "statusBarItem.foregroundBackground",
         );
         this.languageStatusItem.severity = LanguageStatusSeverity.Information;
         break;
+      }
     }
     this.statusBarItem.show();
   }
 
-  public hide() {
+  public hide(): void {
     this.statusBarItem.hide();
   }
 

@@ -13,6 +13,9 @@ function isWindows(): boolean {
   return process.platform === "win32";
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+function handler() {}
+
 /**
  * Resolve the global npm package path.
  *
@@ -33,8 +36,6 @@ export function resolveGlobalNodePath(
     options.shell = true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const handler = () => {};
   try {
     process.on("SIGPIPE", handler);
     const { stdout } = spawnSync(
@@ -92,8 +93,6 @@ export function resolveGlobalYarnPath(
     options.shell = true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const handler = () => {};
   try {
     process.on("SIGPIPE", handler);
     const results = spawnSync(

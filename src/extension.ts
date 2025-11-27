@@ -3,7 +3,7 @@ import { commands, workspace } from "vscode";
 import { createConfigFile } from "./commands.js";
 import { LoggingService } from "./LoggingService.js";
 import { ModuleResolver } from "./ModuleResolver.js";
-import PrettierEditService from "./PrettierEditService.js";
+import { PrettierEditService } from "./PrettierEditService.js";
 import { StatusBar } from "./StatusBar.js";
 import { TemplateService } from "./TemplateService.js";
 import { getConfig } from "./util.js";

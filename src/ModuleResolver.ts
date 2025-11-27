@@ -64,6 +64,7 @@ const globalPaths: Record<
   npm: {
     cache: undefined,
     get(): string | undefined {
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       return resolveGlobalNodePath();
     },
   },
@@ -375,18 +376,20 @@ export class ModuleResolver implements ModuleResolverInterface {
     }
 
     const resolveConfigOptions: PrettierResolveConfigOptions = {
+      // eslint-disable-next-line no-nested-ternary
       config: isVirtual
         ? undefined
-        : vscodeConfig.configPath
-          ? getWorkspaceRelativePath(fileName, vscodeConfig.configPath)
-          : configPath,
+        : vscodeConfig.configPath === undefined
+          ? configPath
+          : getWorkspaceRelativePath(fileName, vscodeConfig.configPath),
       editorconfig: isVirtual ? undefined : vscodeConfig.useEditorConfig,
     };
 
     let resolvedConfig: PrettierOptions | null;
     try {
       resolvedConfig = isVirtual
-        ? null
+        ? // eslint-disable-next-line unicorn/no-null
+          null
         : await prettierInstance.resolveConfig(fileName, resolveConfigOptions);
     } catch (error) {
       this.loggingService.logError(
@@ -426,7 +429,7 @@ export class ModuleResolver implements ModuleResolverInterface {
     vscodeConfig: PrettierVSCodeConfig,
   ): Promise<"error" | "disabled" | PrettierOptions | null> {
     const prettierInstance: typeof prettier | PrettierInstance =
-      (await this.getPrettierInstance(fileName)) || prettier;
+      (await this.getPrettierInstance(fileName)) ?? prettier;
 
     const resolvedConfig = await this.resolveConfig(
       prettierInstance,

@@ -12,7 +12,6 @@ import { RESTART_TO_ENABLE } from "./message.js";
 import { PrettierEditProvider } from "./PrettierEditProvider.js";
 import type { PrettierInstance } from "./PrettierInstance.js";
 import type { StatusBar } from "./StatusBar.js";
-import { FormatterStatus } from "./StatusBar.js";
 import type {
   ExtensionFormattingOptions,
   ModuleResolverInterface,
@@ -24,6 +23,7 @@ import type {
   RangeFormattingOptions,
 } from "./types.js";
 import { getConfig, isAboveV3 } from "./util.js";
+import { FormatterStatus } from "./FormatterStatus.js";
 
 interface ISelectors {
   rangeLanguageSelector: readonly DocumentFilter[];
@@ -48,7 +48,7 @@ const PRETTIER_CONFIG_FILES = [
   ".editorconfig",
 ] as const;
 
-export default class PrettierEditService implements Disposable {
+export class PrettierEditService implements Disposable {
   private formatterHandler: undefined | Disposable;
   private rangeFormatterHandler: undefined | Disposable;
   private readonly registeredWorkspaces = new Set<string>();
@@ -65,13 +65,21 @@ export default class PrettierEditService implements Disposable {
     "graphql",
   ];
 
-  constructor(
-    private readonly moduleResolver: ModuleResolverInterface,
-    private readonly loggingService: LoggingService,
-    private readonly statusBar: StatusBar,
-  ) {}
+    private readonly moduleResolver: ModuleResolverInterface;
+    private readonly loggingService: LoggingService;
+    private readonly statusBar: StatusBar;
 
-  public registerDisposables(): Disposable[] {
+  constructor(
+    moduleResolver: ModuleResolverInterface,
+    loggingService: LoggingService,
+    statusBar: StatusBar,
+  ) {
+    this.moduleResolver = moduleResolver;
+    this.loggingService = loggingService
+    this.statusBar = statusBar
+  }
+
+  public registerDisposables(): readonly Disposable[] {
     const packageWatcher = workspace.createFileSystemWatcher("**/package.json");
     packageWatcher.onDidChange(this.resetFormatters);
     packageWatcher.onDidCreate(this.resetFormatters);
@@ -106,7 +114,7 @@ export default class PrettierEditService implements Disposable {
     ];
   }
 
-  public forceFormatDocument = async () => {
+  public forceFormatDocument = async (): Promise<void> => {
     try {
       const editor = window.activeTextEditor;
       if (!editor) {
@@ -136,7 +144,7 @@ export default class PrettierEditService implements Disposable {
     }
   };
 
-  private readonly prettierConfigChanged = async (uri: Uri) => {
+  private readonly prettierConfigChanged = (uri: Uri) => {
     this.resetFormatters(uri);
   };
 
@@ -145,7 +153,7 @@ export default class PrettierEditService implements Disposable {
       const workspaceFolder = workspace.getWorkspaceFolder(uri);
       this.registeredWorkspaces.delete(workspaceFolder?.uri.fsPath ?? "global");
     } else {
-      // VS Code config change, reset everything
+      // VS Code config change, reset everything.
       this.registeredWorkspaces.clear();
     }
     this.statusBar.update(FormatterStatus.Ready);
@@ -154,7 +162,7 @@ export default class PrettierEditService implements Disposable {
   private readonly handleActiveTextEditorChangedSync = (
     textEditor: TextEditor | undefined,
   ) => {
-    this.handleActiveTextEditorChanged(textEditor).catch((error) => {
+    this.handleActiveTextEditorChanged(textEditor).catch((error: unknown) => {
       this.loggingService.logError("Error handling text editor change", error);
     });
   };
@@ -190,7 +198,7 @@ export default class PrettierEditService implements Disposable {
     );
 
     // If there isn't an instance here, it is because the module could not be loaded either locally
-    // or globally when specified
+    // or globally when specified.
     if (!prettierInstance) {
       this.statusBar.update(FormatterStatus.Error);
       return;
@@ -223,7 +231,7 @@ export default class PrettierEditService implements Disposable {
     }
   };
 
-  public async registerGlobal() {
+  public async registerGlobal(): Promise<void> {
     const selectors = await this.getSelectors(
       this.moduleResolver.getGlobalPrettierInstance(),
     );
@@ -231,7 +239,7 @@ export default class PrettierEditService implements Disposable {
     this.loggingService.logDebug("Enabling Prettier globally", selectors);
   }
 
-  public dispose = () => {
+  public dispose = (): void => {
     this.moduleResolver.dispose();
     this.formatterHandler?.dispose();
     this.rangeFormatterHandler?.dispose();
@@ -286,13 +294,14 @@ export default class PrettierEditService implements Disposable {
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     const { languages } = await prettierInstance.getSupportInfo({
       plugins,
     });
 
-    for (const lang of languages) {
-      if (lang && lang.vscodeLanguageIds) {
-        this.allLanguages.push(...lang.vscodeLanguageIds);
+    for (const language of languages) {
+      if (language.vscodeLanguageIds) {
+        this.allLanguages.push(...language.vscodeLanguageIds);
       }
     }
     this.allLanguages = this.allLanguages.filter(
@@ -310,7 +319,7 @@ export default class PrettierEditService implements Disposable {
 
     const { documentSelectors } = getConfig();
 
-    // Language selector for file extensions
+    // Language selector for file extensions.
     const extensionLanguageSelector: DocumentFilter[] = workspaceFolderUri
       ? this.allExtensions.length === 0
         ? []
@@ -368,7 +377,7 @@ export default class PrettierEditService implements Disposable {
 
   private minimalEdit(document: TextDocument, string1: string) {
     const string0 = document.getText();
-    // length of common prefix
+    // Length of common prefix.
     let i = 0;
     while (
       i < string0.length &&
@@ -377,7 +386,7 @@ export default class PrettierEditService implements Disposable {
     ) {
       ++i;
     }
-    // length of common suffix
+    // Length of common suffix.
     let j = 0;
     while (
       i + j < string0.length &&
@@ -393,13 +402,7 @@ export default class PrettierEditService implements Disposable {
     return TextEdit.replace(new Range(pos0, pos1), newText);
   }
 
-  /**
-   * Format the given text with user's configuration.
-   *
-   * @param text Text to format
-   * @param path formatting file's path
-   * @returns formatted text
-   */
+  /** Format the given text with user's configuration. */
   private async format(
     text: string,
     doc: TextDocument,

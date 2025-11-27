@@ -1,8 +1,10 @@
 import assert from "node:assert";
 import * as vscode from "vscode";
 
-suite("Test format Document Ranges", function () {
+suite("Test format Document Ranges", function tests() {
+  // eslint-disable-next-line @typescript-eslint/no-invalid-this
   this.timeout(10_000);
+
   test("it formats JavaScript ranges", async () => {
     const input = `\
   let i    ="format me!"
@@ -23,6 +25,7 @@ suite("Test format Document Ranges", function () {
       new vscode.Selection(0, 1, 0, 6),
       new vscode.Selection(2, 1, 2, 7),
     ];
+    // eslint-disable-next-line complete/require-variadic-function-argument
     await vscode.commands.executeCommand("editor.action.formatSelection");
     const output = doc.getText();
 
