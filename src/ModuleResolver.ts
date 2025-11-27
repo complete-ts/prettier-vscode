@@ -190,7 +190,7 @@ export class ModuleResolver implements ModuleResolverInterface {
 
     try {
       modulePath =
-        prettierPath === undefined
+        prettierPath === undefined || prettierPath === ""
           ? this.findPkg(fileName, "prettier")
           : getWorkspaceRelativePath(fileName, prettierPath);
     } catch (error) {
