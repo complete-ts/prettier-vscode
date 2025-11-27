@@ -73,8 +73,19 @@ parentPort.on("message", ({ type, id, payload }) => {
             try {
               // For prettier-vscode, `languages` are enough.
               if (methodName === "getSupportInfo") {
+                // Remove functions from language objects to avoid DataCloneError
                 // eslint-disable-next-line no-param-reassign
-                value = { languages: value.languages };
+                value = {
+                  languages: value.languages.map((lang) => {
+                    const cleanLang = {};
+                    for (const [key, val] of Object.entries(lang)) {
+                      if (typeof val !== "function") {
+                        cleanLang[key] = val;
+                      }
+                    }
+                    return cleanLang;
+                  }),
+                };
               }
               postResult(value);
             } catch (error) {
@@ -91,7 +102,18 @@ parentPort.on("message", ({ type, id, payload }) => {
       try {
         // For prettier-vscode, `languages` are enough.
         if (methodName === "getSupportInfo") {
-          result = { languages: result.languages };
+          // Remove functions from language objects to avoid DataCloneError
+          result = {
+            languages: result.languages.map((lang) => {
+              const cleanLang = {};
+              for (const [key, val] of Object.entries(lang)) {
+                if (typeof val !== "function") {
+                  cleanLang[key] = val;
+                }
+              }
+              return cleanLang;
+            }),
+          };
         }
         postResult(result);
       } catch (error) {
