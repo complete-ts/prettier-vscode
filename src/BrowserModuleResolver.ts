@@ -6,7 +6,7 @@ import {
   PrettierOptions,
   ModuleResolverInterface,
   PrettierVSCodeConfig,
-} from "./types";
+} from "./types.js";
 
 import * as prettierStandalone from "prettier/standalone";
 
@@ -27,8 +27,8 @@ import * as yamlPlugin from "prettier/plugins/yaml";
 //import * as postcssPlugin from "prettier/parser-postcss";
 
 import { TextDocument, Uri } from "vscode";
-import { LoggingService } from "./LoggingService";
-import { getWorkspaceRelativePath } from "./util";
+import { LoggingService } from "./LoggingService.js";
+import { getWorkspaceRelativePath } from "./util.js";
 import { ResolveConfigOptions, Options } from "prettier";
 
 const plugins = [
@@ -66,7 +66,9 @@ export class ModuleResolver implements ModuleResolverInterface {
       format: async (source: string, options: PrettierOptions) => {
         return await prettierStandalone.format(source, { ...options, plugins });
       },
-      getSupportInfo: async (): Promise<{ languages: PrettierSupportLanguage[] }> => {
+      getSupportInfo: async (): Promise<{
+        languages: PrettierSupportLanguage[];
+      }> => {
         return {
           languages: [
             {

@@ -1,15 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
-  "import": [
-    "@cspell/cspell-bundled-dicts"
-  ],
-  "files": [
-    "**"
-  ],
-  "enableFiletypes": [
-    "*"
-  ],
+  "import": ["@cspell/cspell-bundled-dicts"],
+  "files": ["**"],
+  "enableFiletypes": ["*"],
   "enableGlobDot": true,
   "useGitignore": true,
   "ignorePaths": [
@@ -25,13 +19,22 @@
     "node_modules/**",
     "package-lock.json",
     "pnpm-lock.yaml",
-    "yarn.lock"
+    "yarn.lock",
   ],
   "words": [
     "dbaeumer",
+    "difronzo",
+    "ehoogeveen",
     "esbenp",
+    "fisker",
+    "kidonng",
+    "lifeart",
+    "medweb",
     "meriyah",
+    "Mrbunker",
     "sarisia",
-    "Zamiell"
-  ]
+    "sosukesuzuki",
+    "Zamiell",
+    "zardoy",
+  ],
 }

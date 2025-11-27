@@ -4,6 +4,17 @@ All notable changes to the "prettier-vscode" extension will be documented in thi
 
 <!-- Check [Keep a Changelog](https://keepachangelog.com/) for recommendations on how to structure this file. -->
 
+## [12.0.0]
+
+- Forked the project and performed the following changes:
+  - Replaced yarn with npm.
+  - Upgraded the version of Prettier to the latest (3.6.2).
+  - Upgraded the version of TypeScript to the latest (5.9.3).
+  - Make TypeScript pass.
+  - Removed Git hooks.
+  - Removed "@types/prettier", since it is now pointless.
+  - Added the latest version of ESLint from [complete-lint](https://complete-ts.github.io/complete-lint) and made it pass.
+
 ## [11.0.0]
 
 - [BREAKING CHANGE] Prevent `.editorconfig` from satisfying the `requireConfig` setting (#2708) - Thanks to [@redoPop](https://github.com/redoPop)
@@ -13,7 +24,7 @@ All notable changes to the "prettier-vscode" extension will be documented in thi
 
 ## [10.5.0]
 
-- Extend list of Prettier config files by ECMAScript module extentions
+- Extend list of Prettier config files by ECMAScript module extensions
 
 ## [10.4.0]
 
@@ -26,7 +37,7 @@ All notable changes to the "prettier-vscode" extension will be documented in thi
 
 ## [10.2.0]
 
-- Fixed the issue where VSCode was misrecognizing the path in output panel due to added quotes.
+- Fixed the issue where VSCode was not recognizing the path in output panel due to added quotes.
 - Fix module resolution with `prettierPath` setting
 
 ## [10.1.0]
@@ -88,7 +99,7 @@ Change default configuration for trailingComma to all to match Prettier 3.0.
 ## [9.10.3]
 
 - Prettier 2.8.0
-- Updated dependancies
+- Updated dependencies
 
 ## [9.9.0]
 
@@ -223,7 +234,7 @@ Change default configuration for trailingComma to all to match Prettier 3.0.
 
 ## [5.9.2]
 
-- Reverted automatical detection of package manager
+- Reverted automatic detection of package manager
 
 ## [5.9.1]
 
