@@ -322,8 +322,8 @@ export class PrettierEditService implements Disposable {
     const { documentSelectors } = getConfig();
 
     // Language selector for file extensions.
-    // eslint-disable-next-line no-nested-ternary
     const extensionLanguageSelector: DocumentFilter[] =
+      // eslint-disable-next-line no-nested-ternary
       workspaceFolderURI === undefined
         ? []
         : this.allExtensions.length === 0

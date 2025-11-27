@@ -35,6 +35,6 @@ export default defineConfig(
   },
 
   {
-    ignores: ["test-fixtures/**"],
+    ignores: [".vscode-test/**", "test-fixtures/**", "out/**"],
   },
 );
