@@ -1,5 +1,5 @@
 {
-  "name": "testplugins",
+  "name": "plugins",
   "version": "1.0.0",
   "description": "Test folder for prettier plugins",
   "private": true,
@@ -9,7 +9,7 @@
   "author": "jarrodldavis",
   "license": "MIT",
   "devDependencies": {
-    "@prettier/plugin-php": "^0.17.6",
-    "prettier": "^2.5.1"
+    "@prettier/plugin-php": "0.17.6",
+    "prettier": "2.5.1"
   }
 }

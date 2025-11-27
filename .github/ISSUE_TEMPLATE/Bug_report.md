@@ -28,28 +28,23 @@ _Short summary of what is going on or to provide context_.
 
 Link to a Github repo that can be used to reproduce the issue.
 
-### Steps To Reproduce:
+### Steps To Reproduce
 
-1.  This is step 1.
-1.  This is step 2. All steps should start with '1.'
+1. This is step 1.
+1. This is step 2. All steps should start with '1.'
 
-### Expected result
+### Expected Result
 
 _Describe what should have happened_.
 
-### Actual result
+### Actual Result
 
 _Describe what actually happened instead_.
 
-### Additional information
+### Additional Information
 
-_Feel free to attach a screenshot_.
-
-**VS Code Version**:
-
-<!-- In VS Code select "Help" > "About", then click on "Copy" and paste the text here -->
-
-**Prettier Extension Version**:
+**VS Code Version**: <!-- In VS Code, select "Help" > "About", then click on "Copy" and paste the text here. -->
+**Prettier Extension Version**: <!-- In VS Code select "View" > "Extensions", then click on "Prettier - Code Formatter (Community Fork)", then find the version on the right side. -->
 
 **OS and version**:
 
@@ -58,6 +53,6 @@ _Feel free to attach a screenshot_.
 <!-- Click the "Prettier" button in the bottom toolbar and copy all the out put log here. -->
 <!-- SEE THIS GUIDE ON HOW TO GET YOUR LOGS: https://github.com/prettier/prettier-vscode/wiki/Writing-a-Good-Issue -->
 
-```
-LOG GOES HERE. DO NOT USE A SCREENSHOT, COPY AND PASTE THE TEXT
+```txt
+LOG GOES HERE. DO NOT USE A SCREENSHOT, COPY AND PASTE THE TEXT.
 ```

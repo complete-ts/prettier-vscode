@@ -1,3 +1,6 @@
+# Contributors
+
+- [Zamiell](https://github.com/Zamiell)
 - [Cole Kennedy](https://github.com/colek42)
 - [Cyril Junod](https://github.com/CiGit)
 - [David Burrows](https://github.com/dburrows)

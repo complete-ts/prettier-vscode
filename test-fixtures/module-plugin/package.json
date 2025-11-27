@@ -1,5 +1,5 @@
 {
-  "name": "testplugins",
+  "name": "module-plugin",
   "version": "1.0.0",
   "description": "Test folder for prettier plugins",
   "private": true,
@@ -10,6 +10,6 @@
   "license": "MIT",
   "devDependencies": {
     "module-plugin-dep": "../module-plugin-dep",
-    "prettier": "^2.0.2"
+    "prettier": "2.0.2"
   }
 }
