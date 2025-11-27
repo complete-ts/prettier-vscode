@@ -131,9 +131,7 @@ export class ModuleResolver implements ModuleResolverInterface {
           try {
             const packageJSONContents = fs.readFileSync(pkgFilePath, "utf8");
             const packageJSON = JSON.parse(packageJSONContents) as unknown;
-            if (
-              isObject(packageJSON)
-            ) {
+            if (isObject(packageJSON)) {
               return pkgFilePath;
             }
           } catch {
@@ -146,7 +144,10 @@ export class ModuleResolver implements ModuleResolverInterface {
       { cwd },
     );
 
-    assertStringNotEmpty(projectPackageJSONPath, "Cannot find the \"package.json\" file for the current project.");
+    assertStringNotEmpty(
+      projectPackageJSONPath,
+      'Cannot find the "package.json" file for the current project.',
+    );
 
     const prettierPackageJSON = loadNodeModule(projectPackageJSONPath);
     assertObject(
@@ -402,7 +403,8 @@ export class ModuleResolver implements ModuleResolverInterface {
       // eslint-disable-next-line no-nested-ternary
       config: isVirtual
         ? undefined
-        : vscodeConfig.configPath === undefined || vscodeConfig.configPath === ""
+        : vscodeConfig.configPath === undefined
+            || vscodeConfig.configPath === ""
           ? configPath
           : getWorkspaceRelativePath(fileName, vscodeConfig.configPath),
       editorconfig: isVirtual ? undefined : vscodeConfig.useEditorConfig,
