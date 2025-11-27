@@ -42,7 +42,7 @@
   ],
   "homepage": "https://marketplace.visualstudio.com/items?itemName=complete.prettier-vscode",
   "bugs": {
-    "url": "https://github.com/prettier/prettier-vscode/issues"
+    "url": "https://github.com/complete-ts/prettier-vscode/issues"
   },
   "repository": {
     "type": "git",
