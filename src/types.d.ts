@@ -43,6 +43,7 @@ interface ModuleResolverInterface {
   dispose: () => void;
   resolveConfig: (
     prettierInstance: {
+      version: string | null;
       resolveConfigFile: (filePath?: string) => Promise<string | null>;
       resolveConfig: (
         fileName: string,

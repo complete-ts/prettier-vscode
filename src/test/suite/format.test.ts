@@ -19,9 +19,12 @@ export function getWorkspaceFolderURI(workspaceFolderName: string): vscode.Uri {
   const workspaceFolder = vscode.workspace.workspaceFolders?.find(
     (folder) => folder.name === workspaceFolderName,
   );
-  assertDefined(workspaceFolder, "Folder not found in workspace. Did you forget to add the test folder to test.code-workspace?")
+  assertDefined(
+    workspaceFolder,
+    "Folder not found in workspace. Did you forget to add the test folder to test.code-workspace?",
+  );
   return workspaceFolder.uri;
-};
+}
 
 export async function getText(
   workspaceFolderName: string,

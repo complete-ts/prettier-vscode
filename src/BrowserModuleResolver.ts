@@ -20,7 +20,7 @@ import * as yamlPlugin from "prettier/plugins/yaml";
 import type { TextDocument, Uri } from "vscode";
 import type { LoggingService } from "./LoggingService.js";
 import { getWorkspaceRelativePath } from "./util.js";
-import type { ResolveConfigOptions, Options } from "prettier";
+import type { ResolveConfigOptions } from "prettier";
 
 const plugins = [
   angularPlugin,
@@ -59,7 +59,7 @@ export class ModuleResolver implements ModuleResolverInterface {
   public getGlobalPrettierInstance(): PrettierModule {
     this.loggingService.logInfo("Using standalone prettier");
     return {
-      format: async (source: string, options: PrettierOptions) =>
+      format: async (source: string, options?: PrettierOptions) =>
         await prettierStandalone.format(source, { ...options, plugins }),
 
       // eslint-disable-next-line @typescript-eslint/require-await
@@ -175,11 +175,12 @@ export class ModuleResolver implements ModuleResolverInterface {
   async resolveConfig(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     prettierInstance: {
+      version: string | null;
       resolveConfigFile: (filePath?: string) => Promise<string | null>;
       resolveConfig: (
         fileName: string,
         options?: ResolveConfigOptions,
-      ) => Promise<Options | null>;
+      ) => Promise<PrettierOptions | null>;
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     uri: Uri,
@@ -187,7 +188,7 @@ export class ModuleResolver implements ModuleResolverInterface {
     fileName: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     vscodeConfig: PrettierVSCodeConfig,
-  ): Promise<Options | "error" | "disabled" | null> {
+  ): Promise<PrettierOptions | "error" | "disabled" | null> {
     // eslint-disable-next-line unicorn/no-null
     return null;
   }

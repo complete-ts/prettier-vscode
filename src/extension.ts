@@ -13,7 +13,7 @@ import { RESTART_TO_ENABLE, EXTENSION_DISABLED } from "./message.js";
 const extensionName = process.env["EXTENSION_NAME"] ?? "dev.prettier-vscode";
 const extensionVersion = process.env["EXTENSION_VERSION"] ?? "0.0.0";
 
-export function activate(context: ExtensionContext) {
+export function activate(context: ExtensionContext): void {
   const loggingService = new LoggingService();
 
   loggingService.logInfo(`Extension Name: ${extensionName}.`);
@@ -79,7 +79,7 @@ export function activate(context: ExtensionContext) {
         ...editService.registerDisposables(),
       );
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       loggingService.logError("Error registering extension", error);
     });
 }
