@@ -2,7 +2,7 @@
   "name": "test-plugin-tailwindcss",
   "version": "1.0.0",
   "description": "Test folder for prettier-plugin-tailwindcss",
-  "private": "true",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
