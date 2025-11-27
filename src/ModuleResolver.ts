@@ -47,6 +47,7 @@ const fsStatSyncWorkaround = (
   ) {
     return origFsStatSync(pathLike, options);
   }
+
   // eslint-disable-next-line no-param-reassign
   options.throwIfNoEntry = true;
   try {
