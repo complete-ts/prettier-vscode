@@ -15,6 +15,7 @@ export default defineConfig(
       parserOptions: {
         projectService: {
           allowDefaultProject: [
+            "eslint.config.mjs",
             "src/worker/prettier-instance-worker.js",
             "webpack.config.js",
           ],
