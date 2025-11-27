@@ -1,21 +1,22 @@
-import * as assert from "assert";
-import * as path from "path";
+import assert from "node:assert";
+import path from "node:path";
 import * as prettier from "prettier";
 import * as sinon from "sinon";
-
-import { getWorkspaceFolderUri } from "./format.test";
-import { ModuleResolver, PrettierNodeModule } from "../../ModuleResolver";
-import { LoggingService } from "../../LoggingService";
+import { getWorkspaceFolderUri } from "./format.test.js";
+import type { PrettierNodeModule } from "../../ModuleResolver.js";
+import { ModuleResolver } from "../../ModuleResolver.js";
+import { LoggingService } from "../../LoggingService.js";
 import {
   OUTDATED_PRETTIER_VERSION_MESSAGE,
   USING_BUNDLED_PRETTIER,
-} from "../../message";
+} from "../../message.js";
 
-suite("Test ModuleResolver", function () {
+suite("Test ModuleResolver", function tests() {
   let moduleResolver: ModuleResolver;
   let logErrorSpy: sinon.SinonSpy;
   let logDebugSpy: sinon.SinonSpy;
 
+  // eslint-disable-next-line @typescript-eslint/no-invalid-this
   this.beforeEach(() => {
     const loggingService = new LoggingService();
     logErrorSpy = sinon.spy(loggingService, "logError");
@@ -33,7 +34,7 @@ suite("Test ModuleResolver", function () {
         await moduleResolver.getPrettierInstance(fileName);
 
       assert.strictEqual(prettierInstance, prettier);
-      assert(logDebugSpy.calledWith(USING_BUNDLED_PRETTIER));
+      assert.ok(logDebugSpy.calledWith(USING_BUNDLED_PRETTIER));
     });
 
     test("it returns the bundled version of Prettier if local is outdated", async () => {
@@ -45,7 +46,7 @@ suite("Test ModuleResolver", function () {
         await moduleResolver.getPrettierInstance(fileName);
 
       assert.strictEqual(prettierInstance, undefined);
-      assert(logErrorSpy.calledWith(OUTDATED_PRETTIER_VERSION_MESSAGE));
+      assert.ok(logErrorSpy.calledWith(OUTDATED_PRETTIER_VERSION_MESSAGE));
     });
 
     test("it returns prettier version from package.json", async () => {

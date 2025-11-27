@@ -1,13 +1,17 @@
-import { TextEncoder } from "util";
+import { TextEncoder } from "node:util";
 import { Uri, workspace } from "vscode";
-import { LoggingService } from "./LoggingService";
-import { PrettierModule, PrettierOptions } from "./types";
+import type { LoggingService } from "./LoggingService.js";
+import type { PrettierModule, PrettierOptions } from "./types.js";
 
 export class TemplateService {
-  constructor(
-    private loggingService: LoggingService,
-    private prettierModule: PrettierModule,
-  ) {}
+  private readonly loggingService: LoggingService;
+  private readonly prettierModule: PrettierModule;
+
+  constructor(loggingService: LoggingService, prettierModule: PrettierModule) {
+    this.loggingService = loggingService;
+    this.prettierModule = prettierModule;
+  }
+
   public async writeConfigFile(folderPath: Uri) {
     const settings = { tabWidth: 2, useTabs: false };
 

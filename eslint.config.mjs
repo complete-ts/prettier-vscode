@@ -13,6 +13,7 @@ export default defineConfig(
   {
     rules: {
       "no-console": "error",
+      "no-cycle": "off", // TODO
     },
   },
 );

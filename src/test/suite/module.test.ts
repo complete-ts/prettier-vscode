@@ -1,8 +1,8 @@
-import * as assert from "assert";
-import { format, getText } from "./format.test";
+import assert from "node:assert";
+import { format, getText } from "./format.test.js";
 
-suite("Test module resolution", function () {
-  this.timeout(10000);
+suite("Test module resolution", function tests() {
+  this.timeout(10_000);
 
   test("it formats without prettier dep using internal version", async () => {
     const { actual } = await format("no-dep", "index.js");

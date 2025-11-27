@@ -1,10 +1,10 @@
 import { window } from "vscode";
-import { TemplateService } from "./TemplateService";
+import type { TemplateService } from "./TemplateService.js";
 
-export type createConfigFileFunction = () => Promise<void>;
+export type CreateConfigFileFunction = () => Promise<void>;
 
 export const createConfigFile =
-  (templateService: TemplateService): createConfigFileFunction =>
+  (templateService: TemplateService): CreateConfigFileFunction =>
   async () => {
     const folderResult = await window.showOpenDialog({
       canSelectFiles: false,
@@ -12,7 +12,9 @@ export const createConfigFile =
       canSelectMany: false,
     });
     if (folderResult && folderResult.length === 1) {
-      const folderUri = folderResult[0];
-      await templateService.writeConfigFile(folderUri);
+      const folderURI = folderResult[0];
+      if (folderURI !== undefined) {
+        await templateService.writeConfigFile(folderURI);
+      }
     }
   };

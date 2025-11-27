@@ -8,11 +8,11 @@ All notable changes to the "prettier-vscode" extension will be documented in thi
 
 - Forked the project and performed the following changes:
   - Replaced yarn with npm.
-  - Upgraded the version of Prettier to the latest (3.6.2).
-  - Upgraded the version of TypeScript to the latest (5.9.3).
+  - Upgraded all dependencies to their latest versions.
   - Make TypeScript pass.
   - Removed Git hooks.
   - Removed "@types/prettier", since it is now pointless.
+  - Removed "glob" and "@types/glob", since it is in the standard library now.
   - Added the latest version of ESLint from [complete-lint](https://complete-ts.github.io/complete-lint) and made it pass.
 
 ## [11.0.0]

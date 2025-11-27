@@ -1,20 +1,13 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-"use strict";
-
-// eslint-disable-next-line no-undef
 const webpack = require("webpack");
-// eslint-disable-next-line no-undef
-const path = require("path");
-// eslint-disable-next-line no-undef
+const path = require("node:path");
 const extensionPackage = require("./package.json");
 const CopyPlugin = require("copy-webpack-plugin");
 
-/**@type {import('webpack').Configuration}*/
+/** @type {import("webpack").Configuration} */
 const config = {
   target: "node",
   entry: "./src/extension.ts",
   output: {
-    // eslint-disable-next-line no-undef
     path: path.resolve(__dirname, "dist"),
     filename: "extension.js",
     libraryTarget: "commonjs2",
@@ -51,11 +44,9 @@ const config = {
         ],
       },
       {
-        // vscode-nls-dev loader:
-        // * rewrite nls-calls
+        // `vscode-nls-dev` loader rewrite nls-calls.
         loader: "vscode-nls-dev/lib/webpack-loader",
         options: {
-          // eslint-disable-next-line no-undef
           base: path.join(__dirname, "src"),
         },
       },
@@ -71,7 +62,7 @@ const browserConfig = /** @type WebpackConfig */ {
   },
   output: {
     filename: "[name].js",
-    // eslint-disable-next-line no-undef
+
     path: path.join(__dirname, "./dist"),
     libraryTarget: "commonjs",
   },
@@ -79,13 +70,12 @@ const browserConfig = /** @type WebpackConfig */ {
     mainFields: ["module", "main"],
     extensions: [".ts", ".js", ".mjs"], // support ts-files and js-files
     alias: {
-      // replace the node based resolver with the browser version
+      // Replace the node based resolver with the browser version.
       "./ModuleResolver": "./BrowserModuleResolver",
     },
     fallback: {
-      // eslint-disable-next-line no-undef
       path: require.resolve("path-browserify"),
-      // eslint-disable-next-line no-undef
+
       util: require.resolve("util/"),
       os: false,
     },
@@ -122,5 +112,4 @@ const browserConfig = /** @type WebpackConfig */ {
   ],
 };
 
-// eslint-disable-next-line no-undef
 module.exports = [config, browserConfig];

@@ -4,8 +4,10 @@
  * COPIED FROM: https://github.com/microsoft/vscode-languageserver-node/blob/master/server/src/files.ts
  * ------------------------------------------------------------------------------------------ */
 
-import { spawnSync, SpawnSyncOptionsWithStringEncoding } from "child_process";
-import * as path from "path";
+import { assertObject } from "complete-common";
+import type { SpawnSyncOptionsWithStringEncoding } from "node:child_process";
+import { spawnSync } from "node:child_process";
+import path from "node:path";
 
 function isWindows(): boolean {
   return process.platform === "win32";
@@ -13,9 +15,11 @@ function isWindows(): boolean {
 
 /**
  * Resolve the global npm package path.
- * @deprecated Since this depends on the used package manager and their version the best is that servers
- * implement this themselves since they know best what kind of package managers to support.
- * @param tracer the tracer to use
+ *
+ * @param tracer The tracer to use.
+ * @deprecated Since this depends on the used package manager and their version the best is that
+ *             servers implement this themselves since they know best what kind of package managers
+ *             to support.
  */
 export function resolveGlobalNodePath(
   tracer?: (message: string) => void,
@@ -33,15 +37,15 @@ export function resolveGlobalNodePath(
   const handler = () => {};
   try {
     process.on("SIGPIPE", handler);
-    const stdout = spawnSync(
+    const { stdout } = spawnSync(
       npmCommand,
       ["config", "get", "prefix"],
       options,
-    ).stdout;
+    );
 
-    if (!stdout) {
+    if (stdout === "") {
       if (tracer) {
-        tracer(`'npm config get prefix' didn't return a value.`);
+        tracer("'npm config get prefix' didn't return a value.");
       }
       return undefined;
     }
@@ -50,22 +54,21 @@ export function resolveGlobalNodePath(
       tracer(`'npm config get prefix' value is: ${prefix}`);
     }
 
-    if (prefix.length > 0) {
+    if (prefix !== "") {
       if (isWindows()) {
         return path.join(prefix, "node_modules");
-      } else {
-        return path.join(prefix, "lib", "node_modules");
       }
+      return path.join(prefix, "lib", "node_modules");
     }
     return undefined;
-  } catch (err) {
+  } catch {
     return undefined;
   } finally {
     process.removeListener("SIGPIPE", handler);
   }
 }
 
-interface YarnJsonFormat {
+interface YarnJSONFormat {
   type: string;
   data: string;
 }
@@ -99,11 +102,11 @@ export function resolveGlobalYarnPath(
       options,
     );
 
-    const stdout = results.stdout;
-    if (!stdout) {
+    const { stdout } = results;
+    if (stdout !== "") {
       if (tracer) {
-        tracer(`'yarn global dir' didn't return a value.`);
-        if (results.stderr) {
+        tracer("'yarn global dir' didn't return a value.");
+        if (results.stderr !== "") {
           tracer(results.stderr);
         }
       }
@@ -112,16 +115,19 @@ export function resolveGlobalYarnPath(
     const lines = stdout.trim().split(/\r?\n/);
     for (const line of lines) {
       try {
-        const yarn: YarnJsonFormat = JSON.parse(line);
+        const maybeYarn = JSON.parse(line) as unknown;
+        assertObject(maybeYarn, `The line was not an object: ${line}`);
+        const yarn = maybeYarn as unknown as YarnJSONFormat;
+
         if (yarn.type === "log") {
           return path.join(yarn.data, "node_modules");
         }
-      } catch (e) {
-        // Do nothing. Ignore the line
+      } catch {
+        // Do nothing. Ignore the line.
       }
     }
     return undefined;
-  } catch (err) {
+  } catch {
     return undefined;
   } finally {
     process.removeListener("SIGPIPE", handler);

@@ -1,8 +1,8 @@
-import * as assert from "assert";
-import { format } from "./format.test";
+import assert from "node:assert";
+import { format } from "./format.test.js";
 
-suite("Test ignore", function () {
-  this.timeout(10000);
+suite("Test ignore", function tests() {
+  this.timeout(10_000);
   test("it does not format file", async () => {
     const { actual, source } = await format("project", "fileToIgnore.js");
     assert.equal(actual, source);

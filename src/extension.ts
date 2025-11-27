@@ -1,16 +1,17 @@
-import { commands, ExtensionContext, workspace } from "vscode";
-import { createConfigFile } from "./commands";
-import { LoggingService } from "./LoggingService";
-import { ModuleResolver } from "./ModuleResolver";
-import PrettierEditService from "./PrettierEditService";
-import { StatusBar } from "./StatusBar";
-import { TemplateService } from "./TemplateService";
-import { getConfig } from "./util";
-import { RESTART_TO_ENABLE, EXTENSION_DISABLED } from "./message";
+import type { ExtensionContext } from "vscode";
+import { commands, workspace } from "vscode";
+import { createConfigFile } from "./commands.js";
+import { LoggingService } from "./LoggingService.js";
+import { ModuleResolver } from "./ModuleResolver.js";
+import PrettierEditService from "./PrettierEditService.js";
+import { StatusBar } from "./StatusBar.js";
+import { TemplateService } from "./TemplateService.js";
+import { getConfig } from "./util.js";
+import { RESTART_TO_ENABLE, EXTENSION_DISABLED } from "./message.js";
 
-// the application insights key (also known as instrumentation key)
-const extensionName = process.env.EXTENSION_NAME || "dev.prettier-vscode";
-const extensionVersion = process.env.EXTENSION_VERSION || "0.0.0";
+// The application insights key (also known as instrumentation key).
+const extensionName = process.env["EXTENSION_NAME"] ?? "dev.prettier-vscode";
+const extensionVersion = process.env["EXTENSION_VERSION"] ?? "0.0.0";
 
 export function activate(context: ExtensionContext) {
   const loggingService = new LoggingService();
@@ -78,7 +79,7 @@ export function activate(context: ExtensionContext) {
         ...editService.registerDisposables(),
       );
     })
-    .catch((err) => {
-      loggingService.logError("Error registering extension", err);
+    .catch((error) => {
+      loggingService.logError("Error registering extension", error);
     });
 }

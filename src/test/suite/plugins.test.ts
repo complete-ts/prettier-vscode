@@ -1,8 +1,10 @@
-import * as assert from "assert";
-import { format, getText } from "./format.test";
+import assert from "node:assert";
+import { format, getText } from "./format.test.js";
 
 suite("Test plugins", function () {
-  this.timeout(10000);
+  // eslint-disable-next-line @typescript-eslint/no-invalid-this
+  this.timeout(10_000);
+
   test("it formats with plugins", async () => {
     const { actual } = await format(
       "plugins",

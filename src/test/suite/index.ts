@@ -1,40 +1,39 @@
-import * as glob from "glob";
-import * as Mocha from "mocha";
-import * as path from "path";
+import { glob } from "node:fs/promises";
+import Mocha from "mocha";
+import path from "node:path";
 
-export function run(): Promise<void> {
-  // Create the mocha test
+export async function run(): Promise<void> {
+  // Create the mocha test.
   const mocha = new Mocha({
     ui: "tdd",
     color: true,
   });
 
-  const testsRoot = path.resolve(__dirname, "..");
+  const testsRoot = path.resolve(import.meta.dirname, "..");
 
-  return new Promise((c, e) => {
-    glob("**/**.test.js", { cwd: testsRoot }, (err, files) => {
-      if (err) {
-        return e(err);
+  // Use Node.js built-in glob (returns an AsyncIterable).
+  for await (const file of glob("**/**.test.js", { cwd: testsRoot })) {
+    mocha.addFile(path.resolve(testsRoot, file));
+  }
+
+  // To run only a single test, set this value: `mocha.grep("<test name>");`
+
+  // Wrap mocha.run in a Promise as it remains callback-based.
+  await new Promise<void>((resolve, reject) => {
+    try {
+      mocha.run((failures) => {
+        if (failures > 0) {
+          reject(new Error(`${failures} tests failed.`));
+        } else {
+          resolve();
+        }
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        reject(error);
+      } else {
+        reject(new Error(`Unknown error: ${error}`));
       }
-
-      // Add files to the test suite
-      files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)));
-
-      // To run only a single test, set this value
-      // mocha.grep("<test name>");
-
-      try {
-        // Run the mocha test
-        mocha.run((failures) => {
-          if (failures > 0) {
-            e(new Error(`${failures} tests failed.`));
-          } else {
-            c();
-          }
-        });
-      } catch (error) {
-        e(error);
-      }
-    });
+    }
   });
 }

@@ -1,5 +1,5 @@
-import * as path from "path";
-import { PrettierOptions } from "./types";
+import path from "node:path";
+import type { PrettierOptions } from "./types.js";
 
 declare const __webpack_require__: typeof require;
 declare const __non_webpack_require__: typeof require;
@@ -14,7 +14,7 @@ export function nodeModuleLoader() {
 export function loadNodeModule<T>(moduleName: string): T | undefined {
   try {
     return nodeModuleLoader()(moduleName);
-  } catch (error) {
+  } catch {
     throw new Error(`Error loading node module '${moduleName}'`);
   }
 }
@@ -25,7 +25,7 @@ export function resolveNodeModule(
 ) {
   try {
     return nodeModuleLoader().resolve(moduleName, options);
-  } catch (error) {
+  } catch {
     throw new Error(`Error resolve node module '${moduleName}'`);
   }
 }

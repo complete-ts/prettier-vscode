@@ -1,30 +1,32 @@
-import * as assert from "assert";
-import { readFile, rename } from "fs";
-import { Done } from "mocha";
-import * as path from "path";
+import assert from "node:assert";
+import { readFile, rename } from "node:fs";
+import type { Done } from "mocha";
+import path from "node:path";
 import * as prettier from "prettier";
-import { promisify } from "util";
+import { promisify } from "node:util";
 import * as vscode from "vscode";
 
 const readFileAsync: (filePath: string, encoding: "utf8") => Promise<string> =
   promisify(readFile);
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = async (ms: number) =>
+  await new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * gets the workspace folder by name
+ *
  * @param name Workspace folder name
  */
 export const getWorkspaceFolderUri = (workspaceFolderName: string) => {
-  const workspaceFolder = vscode.workspace.workspaceFolders!.find((folder) => {
-    return folder.name === workspaceFolderName;
-  });
+  const workspaceFolder = vscode.workspace.workspaceFolders!.find(
+    (folder) => folder.name === workspaceFolderName,
+  );
   if (!workspaceFolder) {
     throw new Error(
       "Folder not found in workspace. Did you forget to add the test folder to test.code-workspace?",
     );
   }
-  return workspaceFolder!.uri;
+  return workspaceFolder.uri;
 };
 
 export async function getText(
@@ -50,8 +52,11 @@ export function putBackPrettierRC(done: Done) {
 
 /**
  * loads and format a file.
+ *
+ * @param workspaceFolderName
  * @param testFile path relative to base URI (a workspaceFolder's URI)
  * @param base base URI
+ * @param shouldRetry
  * @returns source code and resulting code
  */
 export async function format(
@@ -93,9 +98,10 @@ export async function format(
   return { actual, source: text };
 }
 /**
- * Compare prettier's output (default settings)
- * with the output from extension.
+ * Compare prettier's output (default settings) with the output from extension.
+ *
  * @param file path relative to workspace root
+ * @param options
  */
 async function formatSameAsPrettier(
   file: string,
@@ -103,10 +109,9 @@ async function formatSameAsPrettier(
 ) {
   const prettierOptions: prettier.Options = {
     ...options,
-    ...{
-      /* cspell: disable-next-line */
-      filepath: file,
-    },
+
+    /* cspell: disable-next-line */
+    filepath: file,
   };
   const { actual, source } = await format("project", file);
   const prettierFormatted = await prettier.format(source, prettierOptions);
@@ -114,28 +119,48 @@ async function formatSameAsPrettier(
 }
 
 suite("Test format Document", function () {
-  this.timeout(10000);
+  this.timeout(10_000);
   test("it formats JavaScript", async () => {
     await wait(500);
     await formatSameAsPrettier("formatTest/ugly.js");
   });
-  test("it formats TypeScript", () =>
-    formatSameAsPrettier("formatTest/ugly.ts"));
-  test("it formats CSS", () => formatSameAsPrettier("formatTest/ugly.css"));
-  test("it formats JSON", () => formatSameAsPrettier("formatTest/ugly.json"));
-  test("it formats JSONC", () =>
-    formatSameAsPrettier("formatTest/ugly.jsonc", { parser: "json" }));
-  test("it formats JSON", () =>
-    formatSameAsPrettier("formatTest/package.json"));
-  test("it formats HTML", () => formatSameAsPrettier("formatTest/ugly.html"));
-  test("it formats LWC", () =>
-    formatSameAsPrettier("formatTest/lwc.html", { parser: "lwc" }));
-  test("it formats TSX", () => formatSameAsPrettier("formatTest/ugly.tsx"));
-  test("it formats SCSS", () => formatSameAsPrettier("formatTest/ugly.scss"));
-  test("it formats GraphQL", () =>
-    formatSameAsPrettier("formatTest/ugly.graphql"));
-  test("it formats HTML with literals", () =>
-    formatSameAsPrettier("formatTest/htmlWithLiterals.html"));
-  test("it formats Vue", () => formatSameAsPrettier("formatTest/ugly.vue"));
-  test("it formats HBS", () => formatSameAsPrettier("formatTest/ugly.hbs"));
+  test("it formats TypeScript", async () => {
+    await formatSameAsPrettier("formatTest/ugly.ts");
+  });
+  test("it formats CSS", async () => {
+    await formatSameAsPrettier("formatTest/ugly.css");
+  });
+  test("it formats JSON", async () => {
+    await formatSameAsPrettier("formatTest/ugly.json");
+  });
+  test("it formats JSONC", async () => {
+    await formatSameAsPrettier("formatTest/ugly.jsonc", { parser: "json" });
+  });
+  test("it formats JSON", async () => {
+    await formatSameAsPrettier("formatTest/package.json");
+  });
+  test("it formats HTML", async () => {
+    await formatSameAsPrettier("formatTest/ugly.html");
+  });
+  test("it formats LWC", async () => {
+    await formatSameAsPrettier("formatTest/lwc.html", { parser: "lwc" });
+  });
+  test("it formats TSX", async () => {
+    await formatSameAsPrettier("formatTest/ugly.tsx");
+  });
+  test("it formats SCSS", async () => {
+    await formatSameAsPrettier("formatTest/ugly.scss");
+  });
+  test("it formats GraphQL", async () => {
+    await formatSameAsPrettier("formatTest/ugly.graphql");
+  });
+  test("it formats HTML with literals", async () => {
+    await formatSameAsPrettier("formatTest/htmlWithLiterals.html");
+  });
+  test("it formats Vue", async () => {
+    await formatSameAsPrettier("formatTest/ugly.vue");
+  });
+  test("it formats HBS", async () => {
+    await formatSameAsPrettier("formatTest/ugly.hbs");
+  });
 });

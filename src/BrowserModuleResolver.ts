@@ -1,4 +1,4 @@
-import {
+import type {
   PrettierFileInfoOptions,
   PrettierFileInfoResult,
   PrettierSupportLanguage,
@@ -7,9 +7,7 @@ import {
   ModuleResolverInterface,
   PrettierVSCodeConfig,
 } from "./types.js";
-
 import * as prettierStandalone from "prettier/standalone";
-
 import * as angularPlugin from "prettier/plugins/angular";
 import * as babelPlugin from "prettier/plugins/babel";
 import * as glimmerPlugin from "prettier/plugins/glimmer";
@@ -19,17 +17,10 @@ import * as markdownPlugin from "prettier/plugins/markdown";
 import * as meriyahPlugin from "prettier/plugins/meriyah";
 import * as typescriptPlugin from "prettier/plugins/typescript";
 import * as yamlPlugin from "prettier/plugins/yaml";
-
-// commented out as the cod uses `new Function("return this") which
-// is not allowed in the VS Code extension host as it enforces
-// the Trusted Types Content Security Policy
-//import * as flowPlugin from "prettier/parser-flow";
-//import * as postcssPlugin from "prettier/parser-postcss";
-
-import { TextDocument, Uri } from "vscode";
-import { LoggingService } from "./LoggingService.js";
+import type { TextDocument, Uri } from "vscode";
+import type { LoggingService } from "./LoggingService.js";
 import { getWorkspaceRelativePath } from "./util.js";
-import { ResolveConfigOptions, Options } from "prettier";
+import type { ResolveConfigOptions, Options } from "prettier";
 
 const plugins = [
   angularPlugin,
@@ -44,15 +35,20 @@ const plugins = [
 ];
 
 export class ModuleResolver implements ModuleResolverInterface {
-  constructor(private loggingService: LoggingService) {}
+  private readonly loggingService: LoggingService;
 
+  constructor(loggingService: LoggingService) {
+    this.loggingService = loggingService;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
   public async getPrettierInstance(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _fileName: string,
   ): Promise<PrettierModule | undefined> {
     return this.getGlobalPrettierInstance();
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this, @typescript-eslint/require-await
   public async getResolvedIgnorePath(
     fileName: string,
     ignorePath: string,
@@ -63,128 +59,127 @@ export class ModuleResolver implements ModuleResolverInterface {
   public getGlobalPrettierInstance(): PrettierModule {
     this.loggingService.logInfo("Using standalone prettier");
     return {
-      format: async (source: string, options: PrettierOptions) => {
-        return await prettierStandalone.format(source, { ...options, plugins });
-      },
+      format: async (source: string, options: PrettierOptions) =>
+        await prettierStandalone.format(source, { ...options, plugins }),
+
+      // eslint-disable-next-line @typescript-eslint/require-await
       getSupportInfo: async (): Promise<{
         languages: PrettierSupportLanguage[];
-      }> => {
-        return {
-          languages: [
-            {
-              vscodeLanguageIds: [
-                "javascript",
-                "javascriptreact",
-                "mongo",
-                "mongodb",
-              ],
-              extensions: [],
-              parsers: [
-                "babel",
-                "espree",
-                "meriyah",
-                "babel-flow",
-                "babel-ts",
-                "flow",
-                "typescript",
-              ],
-            },
-            {
-              vscodeLanguageIds: ["typescript"],
-              extensions: [],
-              parsers: ["typescript", "babel-ts"],
-            },
-            {
-              vscodeLanguageIds: ["typescriptreact"],
-              extensions: [],
-              parsers: ["typescript", "babel-ts"],
-            },
-            {
-              vscodeLanguageIds: ["json"],
-              extensions: [],
-              parsers: ["json-stringify"],
-            },
-            {
-              vscodeLanguageIds: ["json"],
-              extensions: [],
-              parsers: ["json"],
-            },
-            {
-              vscodeLanguageIds: ["jsonc"],
-              parsers: ["json"],
-            },
-            {
-              vscodeLanguageIds: ["json5"],
-              extensions: [],
-              parsers: ["json5"],
-            },
-            {
-              vscodeLanguageIds: ["handlebars"],
-              extensions: [],
-              parsers: ["glimmer"],
-            },
-            {
-              vscodeLanguageIds: ["graphql"],
-              extensions: [],
-              parsers: ["graphql"],
-            },
-            {
-              vscodeLanguageIds: ["markdown"],
-              parsers: ["markdown"],
-            },
-            {
-              vscodeLanguageIds: ["mdx"],
-              extensions: [],
-              parsers: ["mdx"],
-            },
-            {
-              vscodeLanguageIds: ["html"],
-              extensions: [],
-              parsers: ["angular"],
-            },
-            {
-              vscodeLanguageIds: ["html"],
-              extensions: [],
-              parsers: ["html"],
-            },
-            {
-              vscodeLanguageIds: ["html"],
-              extensions: [],
-              parsers: ["lwc"],
-            },
-            {
-              vscodeLanguageIds: ["vue"],
-              extensions: [],
-              parsers: ["vue"],
-            },
-            {
-              vscodeLanguageIds: ["yaml", "ansible", "home-assistant"],
-              extensions: [],
-              parsers: ["yaml"],
-            },
-          ],
-        };
-      },
+      }> => ({
+        languages: [
+          {
+            vscodeLanguageIds: [
+              "javascript",
+              "javascriptreact",
+              "mongo",
+              "mongodb",
+            ],
+            extensions: [],
+            parsers: [
+              "babel",
+              "espree",
+              "meriyah",
+              "babel-flow",
+              "babel-ts",
+              "flow",
+              "typescript",
+            ],
+          },
+          {
+            vscodeLanguageIds: ["typescript"],
+            extensions: [],
+            parsers: ["typescript", "babel-ts"],
+          },
+          {
+            vscodeLanguageIds: ["typescriptreact"],
+            extensions: [],
+            parsers: ["typescript", "babel-ts"],
+          },
+          {
+            vscodeLanguageIds: ["json"],
+            extensions: [],
+            parsers: ["json-stringify"],
+          },
+          {
+            vscodeLanguageIds: ["json"],
+            extensions: [],
+            parsers: ["json"],
+          },
+          {
+            vscodeLanguageIds: ["jsonc"],
+            parsers: ["json"],
+          },
+          {
+            vscodeLanguageIds: ["json5"],
+            extensions: [],
+            parsers: ["json5"],
+          },
+          {
+            vscodeLanguageIds: ["handlebars"],
+            extensions: [],
+            parsers: ["glimmer"],
+          },
+          {
+            vscodeLanguageIds: ["graphql"],
+            extensions: [],
+            parsers: ["graphql"],
+          },
+          {
+            vscodeLanguageIds: ["markdown"],
+            parsers: ["markdown"],
+          },
+          {
+            vscodeLanguageIds: ["mdx"],
+            extensions: [],
+            parsers: ["mdx"],
+          },
+          {
+            vscodeLanguageIds: ["html"],
+            extensions: [],
+            parsers: ["angular"],
+          },
+          {
+            vscodeLanguageIds: ["html"],
+            extensions: [],
+            parsers: ["html"],
+          },
+          {
+            vscodeLanguageIds: ["html"],
+            extensions: [],
+            parsers: ["lwc"],
+          },
+          {
+            vscodeLanguageIds: ["vue"],
+            extensions: [],
+            parsers: ["vue"],
+          },
+          {
+            vscodeLanguageIds: ["yaml", "ansible", "home-assistant"],
+            extensions: [],
+            parsers: ["yaml"],
+          },
+        ],
+      }),
+
+      // eslint-disable-next-line @typescript-eslint/require-await
       getFileInfo: async (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        filePath: string,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        options?: PrettierFileInfoOptions,
-      ): Promise<PrettierFileInfoResult> => {
-        // TODO: implement ignore file reading
-        return { ignored: false, inferredParser: null };
-      },
+        _filePath: string,
+        _options?: PrettierFileInfoOptions,
+      ): Promise<PrettierFileInfoResult> =>
+        // eslint-disable-next-line unicorn/no-null
+        ({ ignored: false, inferredParser: null }),
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this, @typescript-eslint/require-await
   async resolveConfig(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     prettierInstance: {
-      resolveConfigFile(filePath?: string | undefined): Promise<string | null>;
-      resolveConfig(
+      resolveConfigFile: (filePath?: string) => Promise<string | null>;
+      resolveConfig: (
         fileName: string,
-        options?: ResolveConfigOptions | undefined,
-      ): Promise<Options | null>;
+        options?: ResolveConfigOptions,
+      ) => Promise<Options | null>;
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     uri: Uri,
@@ -193,19 +188,21 @@ export class ModuleResolver implements ModuleResolverInterface {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     vscodeConfig: PrettierVSCodeConfig,
   ): Promise<Options | "error" | "disabled" | null> {
+    // eslint-disable-next-line unicorn/no-null
     return null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this, @typescript-eslint/require-await
   async getResolvedConfig(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _doc: TextDocument,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _vscodeConfig: PrettierVSCodeConfig,
   ): Promise<"error" | "disabled" | PrettierOptions | null> {
+    // eslint-disable-next-line unicorn/no-null
     return null;
   }
 
-  dispose() {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  dispose(): void {
     // nothing to do
   }
 }

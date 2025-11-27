@@ -1,21 +1,19 @@
-import * as assert from "assert";
+import assert from "node:assert";
 import {
   format,
   getText,
   moveRootPrettierRC,
   putBackPrettierRC,
-} from "./format.test";
+} from "./format.test.js";
 
-const testConfig = (testPath: string, resultPath: string) => {
-  return async () => {
-    const { actual } = await format("config", testPath);
-    const expected = await getText("config", resultPath);
-    assert.equal(actual, expected);
-  };
+const testConfig = (testPath: string, resultPath: string) => async () => {
+  const { actual } = await format("config", testPath);
+  const expected = await getText("config", resultPath);
+  assert.equal(actual, expected);
 };
 
 suite("Test configurations", function () {
-  this.timeout(10000);
+  this.timeout(10_000);
   this.beforeAll(moveRootPrettierRC);
   this.afterAll(putBackPrettierRC);
   test(

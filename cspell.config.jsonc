@@ -22,6 +22,7 @@
     "yarn.lock",
   ],
   "words": [
+    "commonmark",
     "dbaeumer",
     "difronzo",
     "ehoogeveen",
@@ -32,6 +33,7 @@
     "medweb",
     "meriyah",
     "Mrbunker",
+    "prettiercode",
     "sarisia",
     "sosukesuzuki",
     "Zamiell",

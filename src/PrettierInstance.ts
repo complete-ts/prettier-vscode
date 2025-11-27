@@ -1,35 +1,35 @@
-import { ResolveConfigOptions } from "prettier";
-import {
+import type { ResolveConfigOptions } from "prettier";
+import type {
   PrettierFileInfoOptions,
   PrettierFileInfoResult,
   PrettierOptions,
   PrettierPlugin,
   PrettierSupportLanguage,
-} from "./types";
+} from "./types.js";
 
 export interface PrettierInstance {
   version: string | null;
-  import(): Promise<string>;
-  format(source: string, options?: PrettierOptions): Promise<string>;
-  getFileInfo(
+  import: () => Promise<string>;
+  format: (source: string, options?: PrettierOptions) => Promise<string>;
+  getFileInfo: (
     filePath: string,
     fileInfoOptions?: PrettierFileInfoOptions,
-  ): Promise<PrettierFileInfoResult>;
-  getSupportInfo({
+  ) => Promise<PrettierFileInfoResult>;
+  getSupportInfo: ({
     plugins,
   }: {
-    plugins: (string | URL | PrettierPlugin)[];
-  }): Promise<{
+    plugins: Array<string | URL | PrettierPlugin>;
+  }) => Promise<{
     languages: PrettierSupportLanguage[];
   }>;
-  clearConfigCache(): Promise<void>;
-  resolveConfigFile(filePath?: string): Promise<string | null>;
-  resolveConfig(
+  clearConfigCache: () => Promise<void>;
+  resolveConfigFile: (filePath?: string) => Promise<string | null>;
+  resolveConfig: (
     fileName: string,
     options?: ResolveConfigOptions,
-  ): Promise<PrettierOptions | null>;
+  ) => Promise<PrettierOptions | null>;
 }
 
-export interface PrettierInstanceConstructor {
-  new (modulePath: string): PrettierInstance;
-}
+export type PrettierInstanceConstructor = new (
+  modulePath: string,
+) => PrettierInstance;

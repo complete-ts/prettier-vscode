@@ -1,41 +1,46 @@
-import * as os from "os";
-import * as path from "path";
+import os from "node:os";
+import path from "node:path";
 import * as semver from "semver";
-import { Uri, workspace, type TextDocument } from "vscode";
-import { PrettierVSCodeConfig } from "./types";
+import { Uri, workspace } from "vscode";
+import type { TextDocument } from "vscode";
+import type { PrettierVSCodeConfig } from "./types.js";
 
 export function getWorkspaceRelativePath(
   filePath: string,
   pathToResolve: string,
-) {
-  // In case the user wants to use ~/.prettierrc on Mac
+): string | undefined {
+  const homeDir = os.homedir();
+
+  // In case the user wants to use ~/.prettierrc on Mac.
   if (
     process.platform === "darwin" &&
-    pathToResolve.indexOf("~") === 0 &&
-    os.homedir()
+    pathToResolve.startsWith("~") &&
+    homeDir !== ""
   ) {
-    return pathToResolve.replace(/^~(?=$|\/|\\)/, os.homedir());
+    return pathToResolve.replace(/^~(?=$|\/|\\)/, homeDir);
   }
 
-  if (workspace.workspaceFolders) {
-    const folder = workspace.getWorkspaceFolder(Uri.file(filePath));
-    return folder
-      ? path.isAbsolute(pathToResolve)
-        ? pathToResolve
-        : path.join(folder.uri.fsPath, pathToResolve)
-      : undefined;
+  if (workspace.workspaceFolders === undefined) {
+    return undefined;
   }
+
+  const folder = workspace.getWorkspaceFolder(Uri.file(filePath));
+  if (folder === undefined) {
+    return undefined;
+  }
+
+  return path.isAbsolute(pathToResolve)
+    ? pathToResolve
+    : path.join(folder.uri.fsPath, pathToResolve);
 }
 
 export function getConfig(scope?: TextDocument | Uri): PrettierVSCodeConfig {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const config = workspace.getConfiguration(
     "prettier",
     scope,
   ) as unknown as PrettierVSCodeConfig;
 
-  // Some settings are disabled for untrusted workspaces
-  // because they can be used for bad things.
+  // Some settings are disabled for untrusted workspaces because they can be used for bad things.
   if (!workspace.isTrusted) {
     const newConfig = {
       ...config,
