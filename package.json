@@ -382,7 +382,6 @@
   "dependencies": {
     "@types/vscode": "1.106.1",
     "complete-common": "2.10.0",
-    "find-up": "8.0.0",
     "prettier": "3.6.2",
     "resolve": "1.22.11",
     "semver": "7.7.3",
@@ -400,6 +399,7 @@
     "@vscode/test-web": "0.0.76",
     "complete-lint": "5.1.1",
     "copy-webpack-plugin": "13.0.1",
+    "find-up": "5.0.0",
     "fs-extra": "11.3.2",
     "mocha": "11.7.5",
     "path-browserify": "1.0.1",

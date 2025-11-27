@@ -1,5 +1,5 @@
 import { assertObject, assertStringNotEmpty, isObject } from "complete-common";
-import { findUpStop, findUpSync } from "find-up";
+import * as findUp from "find-up";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -124,7 +124,7 @@ export class ModuleResolver implements ModuleResolverInterface {
     } catch {
       cwd = path.dirname(modulePath);
     }
-    const projectPackageJSONPath = findUpSync(
+    const projectPackageJSONPath = findUp.sync(
       (dir) => {
         const pkgFilePath = path.join(dir, "package.json");
         if (fs.existsSync(pkgFilePath)) {
@@ -507,16 +507,16 @@ export class ModuleResolver implements ModuleResolverInterface {
     }
 
     // Only look for a module definition outside of any "node_modules" directories.
-    const splitPath = fsPath.split("/");
+    const splitPath = fsPath.split(path.sep);
     let finalPath = fsPath;
     const nodeModulesIndex = splitPath.indexOf("node_modules");
 
     if (nodeModulesIndex > 1) {
-      finalPath = splitPath.slice(0, nodeModulesIndex).join("/");
+      finalPath = splitPath.slice(0, nodeModulesIndex).join(path.sep);
     }
 
     // First look for an explicit package.json dep.
-    const packageJSONResDir = findUpSync(
+    const packageJSONResDir = findUp.sync(
       (dir) => {
         if (fs.existsSync(path.join(dir, "package.json"))) {
           let packageJSON: unknown;
@@ -550,7 +550,7 @@ export class ModuleResolver implements ModuleResolverInterface {
         }
 
         if (this.isInternalTestRoot(dir)) {
-          return findUpStop;
+          return findUp.stop;
         }
 
         return undefined;
@@ -565,14 +565,14 @@ export class ModuleResolver implements ModuleResolverInterface {
     }
 
     // If no explicit package.json dep found, instead look for implicit dep.
-    const nodeModulesResDir = findUpSync(
+    const nodeModulesResDir = findUp.sync(
       (dir) => {
         if (fs.existsSync(path.join(dir, "node_modules", pkgName))) {
           return dir;
         }
 
         if (this.isInternalTestRoot(dir)) {
-          return findUpStop;
+          return findUp.stop;
         }
 
         return undefined;
