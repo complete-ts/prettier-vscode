@@ -86,7 +86,7 @@ export class LoggingService {
       if (error.stack !== undefined) {
         this.outputChannel.appendLine(error.stack);
       }
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     } else if (error) {
       this.logObject(error);
     }

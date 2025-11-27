@@ -36,8 +36,14 @@ export async function getText(
   return expected;
 }
 
-const prettierConfigOrig = path.resolve(import.meta.dirname, "../../../.prettierrc");
-const prettierConfigTemp = path.resolve(import.meta.dirname, "../../../old.prettierrc");
+const prettierConfigOrig = path.resolve(
+  import.meta.dirname,
+  "../../../.prettierrc",
+);
+const prettierConfigTemp = path.resolve(
+  import.meta.dirname,
+  "../../../old.prettierrc",
+);
 
 export function moveRootPrettierRC(done: Done): void {
   rename(prettierConfigOrig, prettierConfigTemp, done);

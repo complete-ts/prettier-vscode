@@ -65,9 +65,9 @@ export class PrettierEditService implements Disposable {
     "graphql",
   ];
 
-    private readonly moduleResolver: ModuleResolverInterface;
-    private readonly loggingService: LoggingService;
-    private readonly statusBar: StatusBar;
+  private readonly moduleResolver: ModuleResolverInterface;
+  private readonly loggingService: LoggingService;
+  private readonly statusBar: StatusBar;
 
   constructor(
     moduleResolver: ModuleResolverInterface,
@@ -75,8 +75,8 @@ export class PrettierEditService implements Disposable {
     statusBar: StatusBar,
   ) {
     this.moduleResolver = moduleResolver;
-    this.loggingService = loggingService
-    this.statusBar = statusBar
+    this.loggingService = loggingService;
+    this.statusBar = statusBar;
   }
 
   public registerDisposables(): readonly Disposable[] {
@@ -323,18 +323,19 @@ export class PrettierEditService implements Disposable {
 
     // Language selector for file extensions.
     // eslint-disable-next-line no-nested-ternary
-    const extensionLanguageSelector: DocumentFilter[] = workspaceFolderURI === undefined
-      ? []
-      : this.allExtensions.length === 0
+    const extensionLanguageSelector: DocumentFilter[] =
+      workspaceFolderURI === undefined
         ? []
-        : [
-            {
-              pattern: `${workspaceFolderURI.fsPath}/**/*.{${this.allExtensions
-                .map((e) => e.slice(1))
-                .join(",")}}`,
-              scheme: "file",
-            },
-          ];
+        : this.allExtensions.length === 0
+          ? []
+          : [
+              {
+                pattern: `${workspaceFolderURI.fsPath}/**/*.{${this.allExtensions
+                  .map((e) => e.slice(1))
+                  .join(",")}}`,
+                scheme: "file",
+              },
+            ];
 
     const customLanguageSelectors: DocumentFilter[] = workspaceFolderURI
       ? documentSelectors.map((pattern) => ({

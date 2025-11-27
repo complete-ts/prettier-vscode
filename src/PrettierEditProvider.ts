@@ -12,14 +12,12 @@ import type { ExtensionFormattingOptions } from "./types.js";
 export class PrettierEditProvider
   implements DocumentRangeFormattingEditProvider, DocumentFormattingEditProvider
 {
-    private readonly provideEdits: (
-      document: TextDocument,
-      options: ExtensionFormattingOptions,
-    ) => Promise<TextEdit[]>
+  private readonly provideEdits: (
+    document: TextDocument,
+    options: ExtensionFormattingOptions,
+  ) => Promise<TextEdit[]>;
 
-  constructor(
-  provideEdits: typeof this.provideEdits
-  ) {
+  constructor(provideEdits: typeof this.provideEdits) {
     this.provideEdits = provideEdits;
   }
 
@@ -28,7 +26,7 @@ export class PrettierEditProvider
     range: Range,
     _options: FormattingOptions,
     _token: CancellationToken,
-  // eslint-disable-next-line complete/no-mutable-return
+    // eslint-disable-next-line complete/no-mutable-return
   ): Promise<TextEdit[]> {
     return await this.provideEdits(document, {
       rangeEnd: document.offsetAt(range.end),
@@ -41,7 +39,7 @@ export class PrettierEditProvider
     document: TextDocument,
     _options: FormattingOptions,
     _token: CancellationToken,
-  // eslint-disable-next-line complete/no-mutable-return
+    // eslint-disable-next-line complete/no-mutable-return
   ): Promise<TextEdit[]> {
     return await this.provideEdits(document, {
       force: false,
