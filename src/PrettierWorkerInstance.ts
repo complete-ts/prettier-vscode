@@ -121,6 +121,7 @@ export const PrettierWorkerInstance: PrettierInstanceConstructor = class Prettie
     return result;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private callMethod(methodName: string, methodArgs: unknown[]): Promise<any> {
     const callId = currentCallId++;
     const promise = new Promise((resolve, reject) => {

@@ -1,0 +1,4 @@
+- change Json to JSON
+- add prettier.config.mjs with operators fix
+- add cspell
+- add complete-lint

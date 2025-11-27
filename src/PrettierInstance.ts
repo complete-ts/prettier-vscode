@@ -18,7 +18,7 @@ export interface PrettierInstance {
   getSupportInfo({
     plugins,
   }: {
-    plugins: (string | PrettierPlugin)[];
+    plugins: (string | URL | PrettierPlugin)[];
   }): Promise<{
     languages: PrettierSupportLanguage[];
   }>;

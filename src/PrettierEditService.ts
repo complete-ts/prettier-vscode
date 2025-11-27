@@ -265,7 +265,7 @@ export default class PrettierEditService implements Disposable {
     documentUri?: Uri,
     workspaceFolderUri?: Uri,
   ): Promise<ISelectors> => {
-    const plugins: (string | PrettierPlugin)[] = [];
+    const plugins: (string | URL | PrettierPlugin)[] = [];
 
     // Prettier v3 does not load plugins automatically
     // So need to resolve config to get plugins info.

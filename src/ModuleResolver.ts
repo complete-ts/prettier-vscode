@@ -28,7 +28,7 @@ import { PrettierWorkerInstance } from "./PrettierWorkerInstance";
 import { PrettierInstance } from "./PrettierInstance";
 import { PrettierMainThreadInstance } from "./PrettierMainThreadInstance";
 import { loadNodeModule, resolveConfigPlugins } from "./ModuleLoader";
-import { isObject } from "complete-common";
+import { assertObject, assertStringNotEmpty, isObject } from "complete-common";
 
 const minPrettierVersion = "1.13.0";
 
@@ -130,21 +130,16 @@ export class ModuleResolver implements ModuleResolverInterface {
     }
 
     const prettierPkgJson = loadNodeModule(packageJsonPath);
+    assertObject(
+      prettierPkgJson,
+      'The Prettier "package.json" file was not an object.',
+    );
 
-    let version: string | null = null;
-
-    if (
-      typeof prettierPkgJson === "object" &&
-      prettierPkgJson !== null &&
-      "version" in prettierPkgJson &&
-      typeof prettierPkgJson.version === "string"
-    ) {
-      version = prettierPkgJson.version;
-    }
-
-    if (!version) {
-      throw new Error("Cannot load Prettier version from package.json");
-    }
+    const { version } = prettierPkgJson;
+    assertStringNotEmpty(
+      version,
+      'Failed to parse the Prettier version from the "package.json" file.',
+    );
 
     return version;
   }
