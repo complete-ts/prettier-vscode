@@ -181,10 +181,6 @@ export class ModuleResolver implements ModuleResolverInterface {
       Uri.file(fileName),
     );
 
-    this.loggingService.logDebug(
-      `getPrettierInstance: fileName=${fileName}, prettierPath=${prettierPath ?? "undefined"}`,
-    );
-
     // Look for local module.
     let modulePath: string | undefined;
 
@@ -406,7 +402,7 @@ export class ModuleResolver implements ModuleResolverInterface {
       // eslint-disable-next-line no-nested-ternary
       config: isVirtual
         ? undefined
-        : vscodeConfig.configPath === undefined
+        : vscodeConfig.configPath === undefined || vscodeConfig.configPath === ""
           ? configPath
           : getWorkspaceRelativePath(fileName, vscodeConfig.configPath),
       editorconfig: isVirtual ? undefined : vscodeConfig.useEditorConfig,
@@ -562,9 +558,6 @@ export class ModuleResolver implements ModuleResolverInterface {
 
     if (packageJSONResDir !== undefined) {
       const packagePath = resolve.sync(pkgName, { basedir: packageJSONResDir });
-      this.loggingService.logDebug(
-        `findPkg: Found ${pkgName} in ${packageJSONResDir}, resolve.sync returned: ${packagePath}`,
-      );
       this.findPkgCache.set(cacheKey, packagePath);
       return packagePath;
     }
@@ -587,9 +580,6 @@ export class ModuleResolver implements ModuleResolverInterface {
 
     if (nodeModulesResDir !== undefined && nodeModulesResDir !== "") {
       const packagePath = resolve.sync(pkgName, { basedir: nodeModulesResDir });
-      this.loggingService.logDebug(
-        `findPkg: Found ${pkgName} implicitly in ${nodeModulesResDir}, resolve.sync returned: ${packagePath}`,
-      );
       this.findPkgCache.set(cacheKey, packagePath);
       return packagePath;
     }
