@@ -281,7 +281,7 @@ export class ModuleResolver implements ModuleResolverInterface {
     const cacheKey = `${fileName}:${ignorePath}`;
     // Cache resolvedIgnorePath because resolving it checks the file system.
     let resolvedIgnorePath = this.ignorePathCache.get(cacheKey);
-    if (!resolvedIgnorePath) {
+    if (resolvedIgnorePath === undefined) {
       resolvedIgnorePath = getWorkspaceRelativePath(fileName, ignorePath);
       // If multiple different workspace folders contain this same file, we may have chosen one that
       // doesn't actually contain .prettierignore.
@@ -293,7 +293,7 @@ export class ModuleResolver implements ModuleResolverInterface {
             // https://stackoverflow.com/a/45242825
             const relative = path.relative(folder, fileName);
             return (
-              relative &&
+              relative !== "" &&
               !relative.startsWith("..") &&
               !path.isAbsolute(relative)
             );
@@ -304,6 +304,7 @@ export class ModuleResolver implements ModuleResolverInterface {
           const p = path.join(folder, ignorePath);
           if (
             // https://stackoverflow.com/questions/17699599/node-js-check-if-file-exists#comment121041700_57708635
+            // eslint-disable-next-line no-await-in-loop
             await fs.promises.stat(p).then(
               () => true,
               () => false,
@@ -315,7 +316,7 @@ export class ModuleResolver implements ModuleResolverInterface {
         }
       }
     }
-    if (resolvedIgnorePath) {
+    if (resolvedIgnorePath !== undefined) {
       this.ignorePathCache.set(cacheKey, resolvedIgnorePath);
     }
     return resolvedIgnorePath;
@@ -326,7 +327,7 @@ export class ModuleResolver implements ModuleResolverInterface {
     prettierInstance: { version: string | null },
     fileName: string,
   ) {
-    if (!prettierInstance.version) {
+    if (prettierInstance.version === null) {
       return fileName;
     }
 
@@ -407,8 +408,8 @@ export class ModuleResolver implements ModuleResolverInterface {
 
     if (
       !isVirtual &&
-      !vscodeConfig.configPath &&
-      !configPath &&
+      vscodeConfig.configPath === undefined &&
+      configPath === undefined &&
       vscodeConfig.requireConfig
     ) {
       this.loggingService.logInfo(

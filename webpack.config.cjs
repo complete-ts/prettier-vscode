@@ -29,6 +29,9 @@ const config = {
   },
   resolve: {
     extensions: [".ts", ".js"],
+    extensionAlias: {
+      ".js": [".ts", ".js"],
+    },
   },
   module: {
     rules: [
@@ -67,15 +70,23 @@ const browserConfig = /** @type WebpackConfig */ {
   resolve: {
     mainFields: ["module", "main"],
     extensions: [".ts", ".js", ".mjs"], // support ts-files and js-files
+    extensionAlias: {
+      ".js": [".ts", ".js"],
+    },
     alias: {
       // Replace the node based resolver with the browser version.
-      "./ModuleResolver": "./BrowserModuleResolver",
+      "./src/ModuleResolver.js$": path.resolve(
+        __dirname,
+        "src/BrowserModuleResolver.ts",
+      ),
     },
     fallback: {
       path: require.resolve("path-browserify"),
-
+      "node:path": require.resolve("path-browserify"),
       util: require.resolve("util/"),
+      "node:util": require.resolve("util/"),
       os: false,
+      "node:os": false,
     },
   },
   module: {
@@ -99,6 +110,15 @@ const browserConfig = /** @type WebpackConfig */ {
   },
   devtool: "source-map",
   plugins: [
+    new webpack.NormalModuleReplacementPlugin(
+      /\/ModuleResolver\.js$/,
+      "./BrowserModuleResolver.js",
+    ),
+    new webpack.NormalModuleReplacementPlugin(/^node:path$/, "path-browserify"),
+    new webpack.NormalModuleReplacementPlugin(/^node:util$/, "util/"),
+    new webpack.NormalModuleReplacementPlugin(/^node:os$/, (resource) => {
+      resource.request = "os";
+    }),
     new webpack.ProvidePlugin({
       process: "process/browser",
       babel: "prettier/esm/parser-babel.mjs",
