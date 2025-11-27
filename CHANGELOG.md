@@ -6,15 +6,18 @@ All notable changes to the "prettier-vscode" extension will be documented in thi
 
 ## [12.0.0]
 
-- Forked the project and performed the following changes:
+- This is the first release of the forked project.
+- User-facing changes:
+  - Upgraded all dependencies to their latest versions, including Prettier. (This means that plugins that require modern version of Prettier will now work, including `prettier-plugin-sh`.)
+  - Fixed the bug where `prettier-plugin-sh` would crash the extension because it its language functions could not be serialized.
+  - Added a handy popup that happens when double Prettier extensions are detected, allowing you to easily uninstall one.
+- Non-user facing changes:
   - Replaced yarn with npm.
-  - Upgraded all dependencies to their latest versions.
-  - Make TypeScript pass.
+  - Made TypeScript pass.
   - Removed Git hooks.
   - Removed "@types/prettier", since it is now pointless.
   - Removed "glob" and "@types/glob", since it is in the standard library now.
   - Added the latest version of ESLint from [complete-lint](https://complete-ts.github.io/complete-lint) and made it pass.
-  - Fixed the bug where `prettier-plugin-sh` would crash the extension because it its language functions could not be serialized.
 
 ## [11.0.0]
 

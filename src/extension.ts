@@ -1,5 +1,5 @@
 import type { ExtensionContext } from "vscode";
-import { commands, workspace } from "vscode";
+import { commands, extensions, window, workspace } from "vscode";
 import { createConfigFile } from "./commands.js";
 import { LoggingService } from "./LoggingService.js";
 import { EXTENSION_DISABLED, RESTART_TO_ENABLE } from "./message.js";
@@ -18,6 +18,30 @@ export function activate(context: ExtensionContext): void {
 
   loggingService.logInfo(`Extension Name: ${extensionName}.`);
   loggingService.logInfo(`Extension Version: ${extensionVersion}.`);
+
+  // Check if the official Prettier extension is also installed
+  const officialExtension = extensions.getExtension("esbenp.prettier-vscode");
+  if (officialExtension) {
+    const message =
+      "Both the official Prettier extension (esbenp.prettier-vscode) and the community fork (complete.prettier-vscode-community) are installed. This will cause conflicts. Please uninstall one of them.";
+    loggingService.logError(message);
+    window
+      .showErrorMessage(message, "Uninstall Official", "Uninstall Community")
+      .then((selection) => {
+        if (selection === "Uninstall Official") {
+          commands.executeCommand(
+            "workbench.extensions.uninstallExtension",
+            "esbenp.prettier-vscode",
+          );
+        } else if (selection === "Uninstall Community") {
+          commands.executeCommand(
+            "workbench.extensions.uninstallExtension",
+            "complete.prettier-vscode-community",
+          );
+        }
+      });
+    return;
+  }
 
   const { enable, enableDebugLogs } = getConfig();
 
